@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Build your box — Fruitly</title>
+<meta name="description" content="Choose your fruits, set the quantity and cutting style, exclude what you never want, and pick your delivery days.">
+<meta name="theme-color" content="#FBF8F3">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<meta property="og:title" content="Build your box — Fruitly">
+<meta property="og:description" content="Choose fruits, set the cut, pick your days. Your box, your rhythm.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="assets/og.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=Instrument+Sans:ital,wght@0,400;0,500;0,600&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/fruitly.css">
+<script src="js/fruitly.js" defer></script>
+<script src="js/build.js" defer></script>
+</head>
+<body>
+
+<header class="navbar">
+  <div class="wrap navbar__inner">
+    <a class="navbar__brand" href="index.html" aria-label="Fruitly home">
+      <svg width="34" height="34" viewBox="0 0 100 100" aria-hidden="true"><path d="M58 7C75 12 87 31 87 51C87 73 68 92 45 92C25 92 10 78 10 59C10 46 18 37 29 28C39 20 44 3 58 7Z" fill="#157A3E"/><path d="M58 7C75 12 87 31 87 51C87 73 68 92 45 92C25 92 10 78 10 59C10 46 18 37 29 28C39 20 44 3 58 7Z" fill="#FFC233" transform="translate(23 15) scale(0.585)"/><path d="M56 9C60 2 69 0 76 3C74 11 65 15 56 9Z" fill="#A8C64D"/></svg>
+      <span class="wordmark">Fruitly</span>
+    </a>
+    <nav class="navbar__links" id="site-nav" aria-label="Main">
+      <a href="shop.html">Shop</a>
+      <a href="build.html" aria-current="page">Build your box</a>
+      <a href="plans.html">Plans</a>
+      <a href="orders.html">Orders</a>
+    </nav>
+    <div class="navbar__actions">
+      <a class="avatar" href="account.html" aria-label="Account">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8.5" r="3.8"/><path d="M4.8 20c1-3.6 3.8-5.5 7.2-5.5s6.2 1.9 7.2 5.5"/></svg>
+      </a>
+      <a class="avatar boxbadge" data-boxbadge data-count="0" href="build.html" aria-label="Your box">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8 12 4l8.5 4-8.5 4z"/><path d="M3.5 8v8l8.5 4 8.5-4V8"/><path d="M12 12v8"/></svg>
+      </a>
+      <button class="nav-toggle" aria-expanded="false" aria-controls="site-nav" aria-label="Menu">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="section section--tight">
+    <div class="wrap" style="display:flex;flex-direction:column;gap:12px">
+      <h1 class="h1">Build your box</h1>
+      <p class="lede" style="font-size:17px">Choose fruits, set the cut, tell us what to skip. We do this every morning.</p>
+    </div>
+  </section>
+
+  <section style="padding-bottom:clamp(40px,6vw,72px)">
+    <div class="wrap" style="display:flex;align-items:flex-start;gap:32px;flex-wrap:wrap">
+
+      <!-- Steps -->
+      <div style="flex:1 1 560px;display:flex;flex-direction:column;gap:24px;min-width:0">
+
+        <div class="card" style="padding:30px 34px 34px;display:flex;flex-direction:column;gap:20px">
+          <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+            <span style="width:28px;height:28px;border-radius:999px;background:var(--green);color:#fff;display:inline-flex;align-items:center;justify-content:center;font:600 13px/1 var(--sans)" aria-hidden="true">1</span>
+            <h2 class="h3" style="font-size:22px">Select fruits</h2>
+            <span class="small muted" style="margin-left:auto" id="select-count">3 of 7 selected</span>
+          </div>
+          <div style="display:flex;flex-wrap:wrap;gap:10px">
+            <button class="chip" type="button" data-fruit="mango" aria-pressed="false">Mango</button>
+            <button class="chip" type="button" data-fruit="kiwi" aria-pressed="false">Kiwi</button>
+            <button class="chip" type="button" data-fruit="pomegranate" aria-pressed="false">Pomegranate</button>
+            <button class="chip" type="button" data-fruit="watermelon" aria-pressed="false">Watermelon</button>
+            <button class="chip" type="button" data-fruit="papaya" aria-pressed="false">Papaya</button>
+            <button class="chip" type="button" data-fruit="pineapple" aria-pressed="false">Pineapple</button>
+            <button class="chip" type="button" data-fruit="grapes" aria-pressed="false">Black grapes</button>
+          </div>
+          <p class="small muted" style="margin:0">Only fruits in season today are listed — the shelf changes with the market.</p>
+        </div>
+
+        <div class="card" style="padding:30px 34px 34px;display:flex;flex-direction:column;gap:20px">
+          <div style="display:flex;align-items:center;gap:12px">
+            <span style="width:28px;height:28px;border-radius:999px;background:var(--green);color:#fff;display:inline-flex;align-items:center;justify-content:center;font:600 13px/1 var(--sans)" aria-hidden="true">2</span>
+            <h2 class="h3" style="font-size:22px">Quantity</h2>
+          </div>
+          <div id="qty-list" style="display:flex;flex-direction:column;gap:14px"></div>
+        </div>
+
+        <div class="card" style="padding:30px 34px 34px;display:flex;flex-direction:column;gap:20px">
+          <div style="display:flex;align-items:center;gap:12px">
+            <span style="width:28px;height:28px;border-radius:999px;background:var(--green);color:#fff;display:inline-flex;align-items:center;justify-content:center;font:600 13px/1 var(--sans)" aria-hidden="true">3</span>
+            <h2 class="h3" style="font-size:22px">Cutting style</h2>
+          </div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap">
+            <button class="chip is-on" type="button" data-cut="Cubed" aria-pressed="true">Cubed</button>
+            <button class="chip" type="button" data-cut="Sliced" aria-pressed="false">Sliced</button>
+            <button class="chip" type="button" data-cut="Whole" aria-pressed="false">Whole, peeled</button>
+          </div>
+        </div>
+
+        <div class="card" style="padding:30px 34px 34px;display:flex;flex-direction:column;gap:20px">
+          <div style="display:flex;align-items:center;gap:12px">
+            <span style="width:28px;height:28px;border-radius:999px;background:var(--green);color:#fff;display:inline-flex;align-items:center;justify-content:center;font:600 13px/1 var(--sans)" aria-hidden="true">4</span>
+            <h2 class="h3" style="font-size:22px">Preferences</h2>
+          </div>
+          <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+            <span style="font:500 15px/1 var(--sans);color:var(--ink-75)">Never send</span>
+            <button class="chip chip--sm chip--never" type="button" data-exclude="papaya" data-label="Papaya" aria-pressed="true">Papaya ✕</button>
+            <button class="chip chip--sm" type="button" data-exclude="watermelon" data-label="Watermelon" aria-pressed="false">Watermelon</button>
+            <button class="chip chip--sm" type="button" data-exclude="pineapple" data-label="Pineapple" aria-pressed="false">Pineapple</button>
+          </div>
+          <label style="display:block">
+            <span class="small muted" style="display:block;margin-bottom:8px">Anything else for the kitchen?</span>
+            <input type="text" placeholder="&ldquo;Less ripe, please&rdquo; — we read these." style="width:100%;height:52px;padding:0 20px;border-radius:var(--r-input);border:1px solid rgba(19,42,29,0.12);background:var(--paper)">
+          </label>
+        </div>
+      </div>
+
+      <!-- Summary -->
+      <aside class="card card--lift" style="flex:1 1 340px;max-width:440px;padding:32px 34px 36px;display:flex;flex-direction:column;gap:22px;position:sticky;top:96px" aria-label="Your box summary">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+          <span class="label">Your box</span>
+          <svg width="26" height="26" viewBox="0 0 100 100" aria-hidden="true"><path d="M58 7C75 12 87 31 87 51C87 73 68 92 45 92C25 92 10 78 10 59C10 46 18 37 29 28C39 20 44 3 58 7Z" fill="#157A3E"/></svg>
+        </div>
+        <div id="sum-list" style="display:flex;flex-direction:column;gap:12px;font-size:15px;color:var(--ink-75)"></div>
+        <div style="height:1px;background:var(--hairline)"></div>
+        <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px">
+          <span class="small" style="color:var(--ink-60);font-weight:500" id="sum-grams">0g per delivery</span>
+          <span class="price" style="font-size:26px" id="sum-price">₹0</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:12px">
+          <span style="font:600 13px/1 var(--sans);color:var(--ink-60)">Delivery days</span>
+          <div class="days" role="group" aria-label="Delivery days">
+            <button class="day is-on" type="button" data-day="M" aria-pressed="true" aria-label="Monday">M</button>
+            <button class="day" type="button" data-day="T" aria-pressed="false" aria-label="Tuesday">T</button>
+            <button class="day is-on" type="button" data-day="W" aria-pressed="true" aria-label="Wednesday">W</button>
+            <button class="day" type="button" data-day="T2" aria-pressed="false" aria-label="Thursday">T</button>
+            <button class="day is-on" type="button" data-day="F" aria-pressed="true" aria-label="Friday">F</button>
+            <button class="day" type="button" data-day="S" aria-pressed="false" aria-label="Saturday">S</button>
+            <button class="day" type="button" data-day="S2" aria-pressed="false" aria-label="Sunday">S</button>
+          </div>
+          <span class="small muted" id="sum-days">Mon · Wed · Fri</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:12px;margin-top:6px">
+          <button class="btn btn--primary btn--block" type="button" id="subscribe-cta" data-checkout>Subscribe this box</button>
+          <button class="btn btn--outline btn--block" type="button" data-checkout>Order once instead</button>
+          <span class="small muted" style="text-align:center">Skip or swap until midnight, any day.</span>
+        </div>
+      </aside>
+    </div>
+  </section>
+</main>
+
+<dialog class="sheet" id="checkout-sheet" aria-labelledby="sheet-title">
+  <div class="sheet__body">
+    <span class="label label--green">Nearly there</span>
+    <h2 class="h3" id="sheet-title">Checkout isn&rsquo;t connected yet.</h2>
+    <p class="muted" style="margin:0">This is the Fruitly front-end build — payments, accounts and live orders arrive when the backend ships. Your box is saved on this device in the meantime.</p>
+    <button class="btn btn--green" type="button" data-close autofocus>Back to the box</button>
+  </div>
+</dialog>
+
+<footer class="footer">
+  <div class="wrap">
+    <div class="footer__band">
+      <a class="navbar__brand" href="index.html" style="color:#fff" aria-label="Fruitly home">
+        <svg width="34" height="34" viewBox="0 0 100 100" aria-hidden="true"><path d="M58 7C75 12 87 31 87 51C87 73 68 92 45 92C25 92 10 78 10 59C10 46 18 37 29 28C39 20 44 3 58 7Z" fill="#FFC233"/><path d="M56 9C60 2 69 0 76 3C74 11 65 15 56 9Z" fill="#A8C64D"/></svg>
+        <span class="wordmark" style="font-size:27px">Fruitly</span>
+      </a>
+      <nav class="footer__links" aria-label="Footer">
+        <a href="shop.html">Shop</a>
+        <a href="plans.html">Plans</a>
+        <a href="orders.html">Orders</a>
+        <a href="account.html">Account</a>
+      </nav>
+      <span class="footer__note">Fresh Fruit. Zero Hassle.</span>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

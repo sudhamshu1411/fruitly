@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Your plan — Fruitly</title>
+<meta name="description" content="Manage your Fruitly subscription — skip deliveries, change days, pause your plan. Demo view with sample data.">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#FBF8F3">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=Instrument+Sans:ital,wght@0,400;0,500;0,600&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/fruitly.css">
+<script src="js/fruitly.js" defer></script>
+</head>
+<body>
+
+<header class="navbar">
+  <div class="wrap navbar__inner">
+    <a class="navbar__brand" href="index.html" aria-label="Fruitly home">
+      <svg width="34" height="34" viewBox="0 0 100 100" aria-hidden="true"><path d="M58 7C75 12 87 31 87 51C87 73 68 92 45 92C25 92 10 78 10 59C10 46 18 37 29 28C39 20 44 3 58 7Z" fill="#157A3E"/><path d="M58 7C75 12 87 31 87 51C87 73 68 92 45 92C25 92 10 78 10 59C10 46 18 37 29 28C39 20 44 3 58 7Z" fill="#FFC233" transform="translate(23 15) scale(0.585)"/><path d="M56 9C60 2 69 0 76 3C74 11 65 15 56 9Z" fill="#A8C64D"/></svg>
+      <span class="wordmark">Fruitly</span>
+    </a>
+    <nav class="navbar__links" id="site-nav" aria-label="Main">
+      <a href="shop.html">Shop</a>
+      <a href="build.html">Build your box</a>
+      <a href="plans.html" aria-current="page">Plans</a>
+      <a href="orders.html">Orders</a>
+    </nav>
+    <div class="navbar__actions">
+      <a class="avatar" href="account.html" aria-label="Account">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8.5" r="3.8"/><path d="M4.8 20c1-3.6 3.8-5.5 7.2-5.5s6.2 1.9 7.2 5.5"/></svg>
+      </a>
+      <a class="avatar boxbadge" data-boxbadge data-count="0" href="build.html" aria-label="Your box">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8 12 4l8.5 4-8.5 4z"/><path d="M3.5 8v8l8.5 4 8.5-4V8"/><path d="M12 12v8"/></svg>
+      </a>
+      <button class="nav-toggle" aria-expanded="false" aria-controls="site-nav" aria-label="Menu">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="section section--tight">
+    <div class="wrap" style="display:flex;align-items:center;gap:18px;flex-wrap:wrap">
+      <h1 class="h1">Your plan</h1>
+      <span class="pill pill--fresh" style="height:32px">Active · demo data</span>
+    </div>
+  </section>
+
+  <section style="padding-bottom:clamp(40px,6vw,72px)">
+    <div class="wrap" style="display:flex;align-items:flex-start;gap:32px;flex-wrap:wrap">
+
+      <!-- Left -->
+      <div style="flex:1.8 1 560px;display:flex;flex-direction:column;gap:24px;min-width:0">
+
+        <div class="card card--dark" style="padding:36px 40px 40px;display:flex;flex-direction:column;gap:26px">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+            <span class="label" style="color:rgba(255,255,255,0.5)">Your Fruitly</span>
+            <svg width="28" height="28" viewBox="0 0 100 100" aria-hidden="true"><path d="M58 7C75 12 87 31 87 51C87 73 68 92 45 92C25 92 10 78 10 59C10 46 18 37 29 28C39 20 44 3 58 7Z" fill="#FFC233"/></svg>
+          </div>
+          <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:24px;flex-wrap:wrap">
+            <div style="display:flex;flex-direction:column;gap:8px">
+              <span class="h2" style="color:#fff;font-variation-settings:'wdth' 114">Couple Box</span>
+              <span style="color:rgba(255,255,255,0.62)">Alternate days · cubed · ₹229 per delivery</span>
+            </div>
+            <div class="days days--dark" aria-label="Delivery days: Monday, Wednesday, Friday">
+              <span class="day is-on">M</span><span class="day">T</span><span class="day is-on">W</span><span class="day">T</span><span class="day is-on">F</span><span class="day">S</span><span class="day">S</span>
+            </div>
+          </div>
+          <div style="background:rgba(255,255,255,0.08);border-radius:20px;padding:18px 24px;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap">
+            <div style="display:flex;flex-direction:column;gap:4px">
+              <span style="font:600 12px/1 var(--sans);letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.5)">Next delivery</span>
+              <span style="font:600 18px/1.2 var(--sans)" id="next-delivery">Mon 24 Aug · before 8am</span>
+            </div>
+            <div style="display:flex;gap:12px">
+              <button class="btn btn--ghost-dark btn--sm" type="button" data-skip="next">Skip it</button>
+              <a class="btn btn--white btn--sm" href="build.html">Change box</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" style="padding:8px 34px">
+          <p class="label" style="padding:24px 0 4px;margin:0">Upcoming deliveries</p>
+          <div class="rowlist">
+            <div class="row">
+              <span class="datechip">Mon<b>24</b></span>
+              <div class="row__main">
+                <span style="font-weight:600">Couple Box</span>
+                <span class="small muted">Mango · kiwi · pomegranate · grapes</span>
+              </div>
+              <span class="pill pill--fresh" data-state>Confirmed</span>
+              <button type="button" data-skip style="font:600 14px/1 var(--sans);color:var(--green)">Skip</button>
+            </div>
+            <div class="row">
+              <span class="datechip">Wed<b>26</b></span>
+              <div class="row__main">
+                <span style="font-weight:600">Couple Box</span>
+                <span class="small muted">Cut list locks the night before</span>
+              </div>
+              <span class="pill pill--neutral" data-state>Scheduled</span>
+              <button type="button" data-skip style="font:600 14px/1 var(--sans);color:var(--green)">Skip</button>
+            </div>
+            <div class="row">
+              <span class="datechip">Fri<b>28</b></span>
+              <div class="row__main">
+                <span style="font-weight:600">Couple Box</span>
+                <span class="small muted">Cut list locks the night before</span>
+              </div>
+              <span class="pill pill--neutral" data-state>Scheduled</span>
+              <button type="button" data-skip style="font:600 14px/1 var(--sans);color:var(--green)">Skip</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right -->
+      <div style="flex:1 1 320px;max-width:440px;display:flex;flex-direction:column;gap:24px">
+        <div class="card" style="padding:28px 32px 32px;display:flex;flex-direction:column;gap:18px">
+          <span class="label">Delivery days</span>
+          <div class="days" aria-label="Delivery days: Monday, Wednesday, Friday">
+            <span class="day is-on">M</span><span class="day">T</span><span class="day is-on">W</span><span class="day">T</span><span class="day is-on">F</span><span class="day">S</span><span class="day">S</span>
+          </div>
+          <a class="btn btn--outline btn--sm" href="build.html">Change days</a>
+        </div>
+
+        <div class="card" style="padding:28px 32px 32px;display:flex;flex-direction:column;gap:16px">
+          <span class="label">Box preferences</span>
+          <div style="display:flex;flex-direction:column;gap:12px;font-size:15px;color:var(--ink-75)">
+            <div style="display:flex;justify-content:space-between;gap:12px"><span>Cutting style</span><span style="font-weight:600;color:var(--ink)">Cubed</span></div>
+            <div style="display:flex;justify-content:space-between;gap:12px"><span>Excluded</span><span style="font-weight:600;color:var(--ink)">Papaya</span></div>
+            <div style="display:flex;justify-content:space-between;gap:12px"><span>Doorstep note</span><span style="font-weight:600;color:var(--ink)">Leave with security</span></div>
+          </div>
+          <a href="account.html" style="font:600 14px/1 var(--sans)">Edit preferences</a>
+        </div>
+
+        <div class="card card--sand" style="padding:28px 32px 32px;display:flex;flex-direction:column;gap:14px">
+          <span class="label">Going away?</span>
+          <p style="margin:0;font-size:15px;color:var(--ink-75)">Pause for up to 30 days. Your plan, days and prices wait for you.</p>
+          <button class="btn btn--outline btn--sm" type="button" data-checkout>Pause plan</button>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<dialog class="sheet" id="checkout-sheet" aria-labelledby="sheet-title">
+  <div class="sheet__body">
+    <span class="label label--green">Demo build</span>
+    <h2 class="h3" id="sheet-title">Plan changes aren&rsquo;t connected yet.</h2>
+    <p class="muted" style="margin:0">This page shows the subscription experience with sample data. Pausing, skipping and billing wire up to the Fruitly backend when it ships.</p>
+    <button class="btn btn--green" type="button" data-close autofocus>Got it</button>
+  </div>
+</dialog>
+
+<footer class="footer">
+  <div class="wrap">
+    <div class="footer__band">
+      <a class="navbar__brand" href="index.html" style="color:#fff" aria-label="Fruitly home">
+        <svg width="34" height="34" viewBox="0 0 100 100" aria-hidden="true"><path d="M58 7C75 12 87 31 87 51C87 73 68 92 45 92C25 92 10 78 10 59C10 46 18 37 29 28C39 20 44 3 58 7Z" fill="#FFC233"/><path d="M56 9C60 2 69 0 76 3C74 11 65 15 56 9Z" fill="#A8C64D"/></svg>
+        <span class="wordmark" style="font-size:27px">Fruitly</span>
+      </a>
+      <nav class="footer__links" aria-label="Footer">
+        <a href="shop.html">Shop</a>
+        <a href="plans.html">Plans</a>
+        <a href="orders.html">Orders</a>
+        <a href="account.html">Account</a>
+      </nav>
+      <span class="footer__note">Fresh Fruit. Zero Hassle.</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* Skip toggles — local demo state only. */
+document.addEventListener("DOMContentLoaded", function () {
+  document.querySelectorAll(".row [data-skip]").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var row = btn.closest(".row");
+      var pill = row.querySelector("[data-state]");
+      var skipped = btn.textContent === "Undo";
+      if (skipped) {
+        pill.textContent = pill.getAttribute("data-prev") || "Scheduled";
+        pill.className = "pill " + (pill.getAttribute("data-prevclass") || "pill--neutral");
+        btn.textContent = "Skip";
+      } else {
+        pill.setAttribute("data-prev", pill.textContent);
+        pill.setAttribute("data-prevclass", pill.classList.contains("pill--fresh") ? "pill--fresh" : "pill--neutral");
+        pill.textContent = "Skipped";
+        pill.className = "pill pill--warn";
+        btn.textContent = "Undo";
+      }
+      if (window.Fruitly) window.Fruitly.toast(skipped ? "Delivery restored" : "Skipped — nothing is cut for you that morning");
+    });
+  });
+  var nextBtn = document.querySelector('[data-skip="next"]');
+  if (nextBtn) nextBtn.addEventListener("click", function () {
+    var label = document.getElementById("next-delivery");
+    var skipped = nextBtn.textContent === "Undo skip";
+    label.textContent = skipped ? "Mon 24 Aug · before 8am" : "Wed 26 Aug · before 8am";
+    nextBtn.textContent = skipped ? "Skip it" : "Undo skip";
+  });
+});
+</script>
+
+</body>
+</html>

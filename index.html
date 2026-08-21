@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fruitly — Freshly peeled fruit at your doorstep</title>
+<meta name="description" content="Washed, cut, sealed and chilled before sunrise. Fruitly is a freshness subscription — fresh fruit cups at your door before 8am. Skip or swap until midnight.">
+<meta name="theme-color" content="#FBF8F3">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<meta property="og:title" content="Fruitly — Freshly peeled fruit at your doorstep">
+<meta property="og:description" content="Fresh Fruit. Zero Hassle. A freshness subscription: cut this morning, at your door before 8am.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="assets/og.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=Instrument+Sans:ital,wght@0,400;0,500;0,600&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/fruitly.css">
+<script src="js/fruitly.js" defer></script>
+</head>
+<body>
+
+<header class="navbar">
+  <div class="wrap navbar__inner">
+    <a class="navbar__brand" href="index.html" aria-label="Fruitly home">
+      <svg width="34" height="34" viewBox="0 0 100 100" aria-hidden="true"><path d="M58 7C75 12 87 31 87 51C87 73 68 92 45 92C25 92 10 78 10 59C10 46 18 37 29 28C39 20 44 3 58 7Z" fill="#157A3E"/><path d="M58 7C75 12 87 31 87 51C87 73 68 92 45 92C25 92 10 78 10 59C10 46 18 37 29 28C39 20 44 3 58 7Z" fill="#FFC233" transform="translate(23 15) scale(0.585)"/><path d="M56 9C60 2 69 0 76 3C74 11 65 15 56 9Z" fill="#A8C64D"/></svg>
+      <span class="wordmark">Fruitly</span>
+    </a>
+    <nav class="navbar__links" id="site-nav" aria-label="Main">
+      <a href="shop.html">Shop</a>
+      <a href="build.html">Build your box</a>
+      <a href="plans.html">Plans</a>
+      <a href="orders.html">Orders</a>
+    </nav>
+    <div class="navbar__actions">
+      <a class="avatar" href="account.html" aria-label="Account">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8.5" r="3.8"/><path d="M4.8 20c1-3.6 3.8-5.5 7.2-5.5s6.2 1.9 7.2 5.5"/></svg>
+      </a>
+      <a class="avatar boxbadge" data-boxbadge data-count="0" href="build.html" aria-label="Your box">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8 12 4l8.5 4-8.5 4z"/><path d="M3.5 8v8l8.5 4 8.5-4V8"/><path d="M12 12v8"/></svg>
+      </a>
+      <a class="btn btn--primary btn--sm navbar__cta" href="build.html">Start subscription</a>
+      <button class="nav-toggle" aria-expanded="false" aria-controls="site-nav" aria-label="Menu">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <!-- Hero -->
+  <section class="section">
+    <div class="wrap hero">
+      <div class="hero__copy">
+        <span class="pill pill--fresh">Peeled at 5am · At your door by 8</span>
+        <h1 class="display">Freshly peeled fruit at your doorstep.</h1>
+        <p class="lede">Washed, cut, sealed and chilled before sunrise. Skip or swap until midnight — no calls, no crates.</p>
+        <div class="hero__cta">
+          <a class="btn btn--primary" href="build.html">Start subscription</a>
+          <a class="btn btn--outline" href="build.html">Build your box</a>
+        </div>
+        <div class="hero__proof">
+          <span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#157A3E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 5c0 7-4.5 11-9 11.5"/><path d="M20 5c-9 0-13 3.5-13 8a5 5 0 0 0 2 4"/><path d="M5 20c0-3 1-5 2-6"/></svg>
+            Cut this morning
+          </span>
+          <span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#157A3E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8 12 4l8.5 4-8.5 4z"/><path d="M3.5 8v8l8.5 4 8.5-4V8"/><path d="M12 12v8"/></svg>
+            Sealed &amp; chilled
+          </span>
+          <span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#157A3E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7v5.2l3.2 2"/></svg>
+            Before 8am
+          </span>
+        </div>
+      </div>
+
+      <div class="hero__art" role="img" aria-label="Macro photograph placeholder — cut mango">
+        <svg viewBox="0 0 620 480" aria-hidden="true" style="position:absolute;inset:0;width:100%;height:100%">
+          <path d="M420 60C520 88 580 190 570 290C558 400 460 460 350 448C250 436 190 360 200 260C210 160 320 32 420 60Z" fill="#FFC233" opacity="0.32"/>
+          <path d="M300 180C360 196 396 258 390 318C382 384 324 420 258 412C198 405 162 360 168 300C174 240 240 164 300 180Z" fill="#F26B1D" opacity="0.16"/>
+          <path d="M150 90C186 100 208 136 204 172C199 212 164 234 124 229C88 225 66 198 70 162C74 126 114 80 150 90Z" fill="#157A3E" opacity="0.18"/>
+        </svg>
+        <span class="hero__stamp" aria-hidden="true">
+          <svg width="44" height="44" viewBox="0 0 100 100"><path d="M58 7C75 12 87 31 87 51C87 73 68 92 45 92C25 92 10 78 10 59C10 46 18 37 29 28C39 20 44 3 58 7Z" fill="#FFC233"/></svg>
+        </span>
+        <div class="hero__ticket">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+            <span class="label">Your Fruitly</span>
+            <span class="pill pill--fresh">Arriving today</span>
+          </div>
+          <span class="h3">Out for delivery · 07:40</span>
+          <div class="meter" aria-hidden="true">
+            <span class="is-done"></span><span class="is-done"></span><span class="is-now"></span><span></span>
+          </div>
+          <span class="small muted">Peeled 05:10 · Sealed &amp; chilled 05:40</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Fresh today -->
+  <section class="section">
+    <div class="wrap">
+      <div style="display:flex;align-items:baseline;justify-content:space-between;gap:24px;flex-wrap:wrap;margin-bottom:28px">
+        <h2 class="h2">What&rsquo;s fresh today</h2>
+        <a href="shop.html" style="font:600 15px/1 var(--sans)">Browse all fruit →</a>
+      </div>
+      <div class="grid grid-4">
+
+        <article class="card product">
+          <div class="product__art" style="background:rgba(255,194,51,0.16)" aria-hidden="true">
+            <svg width="66" height="66" viewBox="0 0 100 100"><path d="M58 7C75 12 87 31 87 51C87 73 68 92 45 92C25 92 10 78 10 59C10 46 18 37 29 28C39 20 44 3 58 7Z" fill="#FFC233"/><path d="M56 9C60 2 69 0 76 3C74 11 65 15 56 9Z" fill="#A8C64D"/></svg>
+          </div>
+          <div class="product__body">
+            <span class="pill pill--fresh" style="align-self:flex-start">Fresh today</span>
+            <h3 class="h3">Alphonso mango</h3>
+            <p class="product__meta" style="margin:0">Peeled and cubed · 220g cup</p>
+            <div class="product__foot">
+              <span class="price" style="font-size:19px">₹120</span>
+              <button class="btn btn--green btn--sm" type="button" data-add="mango">Add</button>
+            </div>
+          </div>
+        </article>
+
+        <article class="card product">
+          <div class="product__art" style="background:rgba(168,198,77,0.18)" aria-hidden="true">
+            <svg width="60" height="60" viewBox="0 0 100 100"><path d="M50 12C71 12 85 28 85 50C85 72 71 88 50 88C29 88 15 72 15 50C15 28 29 12 50 12Z" fill="#A8C64D"/><circle cx="50" cy="50" r="13" fill="#F4F1EA"/></svg>
+          </div>
+          <div class="product__body">
+            <h3 class="h3" style="margin-top:38px">Kiwi</h3>
+            <p class="product__meta" style="margin:0">Peeled and sliced · 180g cup</p>
+            <div class="product__foot">
+              <span class="price" style="font-size:19px">₹90</span>
+              <button class="btn btn--green btn--sm" type="button" data-add="kiwi">Add</button>
+            </div>
+          </div>
+        </article>
+
+        <article class="card product">
+          <div class="product__art" style="background:rgba(255,107,90,0.14)" aria-hidden="true">
+            <svg width="64" height="64" viewBox="0 0 100 100"><path d="M50 8C74 8 90 26 90 50C90 74 74 92 50 92C26 92 10 74 10 50C10 26 26 8 50 8Z" fill="#FF6B5A"/><path d="M50 24C64 24 74 35 74 50C74 65 64 76 50 76C36 76 26 65 26 50C26 35 36 24 50 24Z" fill="#FBF8F3" opacity="0.35"/></svg>
+          </div>
+          <div class="product__body">
+            <h3 class="h3" style="margin-top:38px">Watermelon</h3>
+            <p class="product__meta" style="margin:0">Deseeded and cubed · 250g cup</p>
+            <div class="product__foot">
+              <span class="price" style="font-size:19px">₹80</span>
+              <button class="btn btn--green btn--sm" type="button" data-add="watermelon">Add</button>
+            </div>
+          </div>
+        </article>
+
+        <article class="card product">
+          <div class="product__art" style="background:rgba(142,59,107,0.12)" aria-hidden="true">
+            <svg width="62" height="62" viewBox="0 0 100 100"><path d="M50 10C73 10 88 27 88 50C88 73 73 90 50 90C27 90 12 73 12 50C12 27 27 10 50 10Z" fill="#8E3B6B"/><path d="M38 40h24M38 52h24M38 64h24" stroke="#FBF8F3" stroke-width="4" stroke-linecap="round" opacity="0.3"/></svg>
+          </div>
+          <div class="product__body">
+            <h3 class="h3" style="margin-top:38px">Pomegranate</h3>
+            <p class="product__meta" style="margin:0">Hand-seeded · 200g cup</p>
+            <div class="product__foot">
+              <span class="price" style="font-size:19px">₹110</span>
+              <button class="btn btn--green btn--sm" type="button" data-add="pomegranate">Add</button>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- Boxes -->
+  <section class="section">
+    <div class="wrap">
+      <div style="display:flex;align-items:baseline;justify-content:space-between;gap:24px;flex-wrap:wrap;margin-bottom:28px">
+        <h2 class="h2">Fruitly boxes</h2>
+        <a href="shop.html" style="font:600 15px/1 var(--sans)">Compare all boxes →</a>
+      </div>
+      <div class="grid grid-4">
+        <a class="card card--pad" href="build.html" style="display:flex;flex-direction:column;gap:10px;color:var(--ink)">
+          <svg width="44" height="44" viewBox="0 0 100 100" aria-hidden="true"><path d="M58 7C75 12 87 31 87 51C87 73 68 92 45 92C25 92 10 78 10 59C10 46 18 37 29 28C39 20 44 3 58 7Z" fill="#FFC233"/></svg>
+          <span class="h3" style="margin-top:8px">Solo Box</span>
+          <span class="small muted">250g · 1 cup · 3 fruits</span>
+          <span style="font:600 15px/1 var(--sans);margin-top:10px">₹129 <span class="muted" style="font-weight:400">/ delivery</span></span>
+        </a>
+        <a class="card card--pad" href="build.html" style="display:flex;flex-direction:column;gap:10px;color:var(--ink)">
+          <svg width="44" height="44" viewBox="0 0 100 100" aria-hidden="true"><path d="M58 7C75 12 87 31 87 51C87 73 68 92 45 92C25 92 10 78 10 59C10 46 18 37 29 28C39 20 44 3 58 7Z" fill="#A8C64D"/></svg>
+          <span class="h3" style="margin-top:8px">Couple Box</span>
+          <span class="small muted">450g · 2 cups · 4 fruits</span>
+          <span style="font:600 15px/1 var(--sans);margin-top:10px">₹229 <span class="muted" style="font-weight:400">/ delivery</span></span>
+        </a>
+        <a class="card card--pad" href="build.html" style="display:flex;flex-direction:column;gap:10px;color:var(--ink)">
+          <svg width="44" height="44" viewBox="0 0 100 100" aria-hidden="true"><path d="M58 7C75 12 87 31 87 51C87 73 68 92 45 92C25 92 10 78 10 59C10 46 18 37 29 28C39 20 44 3 58 7Z" fill="#FF6B5A"/></svg>
+          <span class="h3" style="margin-top:8px">Family Box</span>
+          <span class="small muted">900g · 4 cups · 5 fruits</span>
+          <span style="font:600 15px/1 var(--sans);margin-top:10px">₹399 <span class="muted" style="font-weight:400">/ delivery</span></span>
+        </a>
+        <a class="card card--dark card--pad" href="build.html" style="display:flex;flex-direction:column;gap:10px;color:#fff">
+          <svg width="44" height="44" viewBox="0 0 100 100" aria-hidden="true"><path d="M58 7C75 12 87 31 87 51C87 73 68 92 45 92C25 92 10 78 10 59C10 46 18 37 29 28C39 20 44 3 58 7Z" fill="#FFC233"/><path d="M56 9C60 2 69 0 76 3C74 11 65 15 56 9Z" fill="#A8C64D"/></svg>
+          <span class="h3" style="margin-top:8px">Premium Box</span>
+          <span class="small" style="color:rgba(255,255,255,0.65)">700g · seasonal exotics</span>
+          <span style="font:600 15px/1 var(--sans);margin-top:10px;color:var(--mango)">₹599 <span style="font-weight:400;color:rgba(255,255,255,0.5)">/ delivery</span></span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Subscription band -->
+  <section class="section">
+    <div class="wrap">
+      <div class="band">
+        <div style="display:flex;flex-direction:column;gap:16px;max-width:60ch">
+          <span class="brandline">Make Fresh a Habit.</span>
+          <h2 class="h2" style="color:#fff">Set a rhythm. We do the rest.</h2>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:4px">
+            <span class="chip chip--sm" style="background:rgba(255,255,255,0.12);color:#fff">Daily</span>
+            <span class="chip chip--sm" style="background:rgba(255,255,255,0.12);color:#fff">Alternate days</span>
+            <span class="chip chip--sm" style="background:rgba(255,255,255,0.12);color:#fff">Weekly</span>
+            <span class="chip chip--sm" style="background:rgba(255,255,255,0.12);color:#fff">Monthly</span>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:14px">
+          <a class="btn btn--primary" href="build.html">Start subscription</a>
+          <span class="small" style="color:rgba(255,255,255,0.62)">Skip or pause anytime. Two taps.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="wrap">
+    <div class="footer__band">
+      <a class="navbar__brand" href="index.html" style="color:#fff" aria-label="Fruitly home">
+        <svg width="34" height="34" viewBox="0 0 100 100" aria-hidden="true"><path d="M58 7C75 12 87 31 87 51C87 73 68 92 45 92C25 92 10 78 10 59C10 46 18 37 29 28C39 20 44 3 58 7Z" fill="#FFC233"/><path d="M56 9C60 2 69 0 76 3C74 11 65 15 56 9Z" fill="#A8C64D"/></svg>
+        <span class="wordmark" style="font-size:27px">Fruitly</span>
+      </a>
+      <nav class="footer__links" aria-label="Footer">
+        <a href="shop.html">Shop</a>
+        <a href="plans.html">Plans</a>
+        <a href="orders.html">Orders</a>
+        <a href="account.html">Account</a>
+      </nav>
+      <span class="footer__note">Fresh Fruit. Zero Hassle.</span>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

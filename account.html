@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Account — Fruitly</title>
+<meta name="description" content="Your Fruitly account — address, payments, preferences and subscription. Demo view with sample data.">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#FBF8F3">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=Instrument+Sans:ital,wght@0,400;0,500;0,600&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/fruitly.css">
+<script src="js/fruitly.js" defer></script>
+</head>
+<body>
+
+<header class="navbar">
+  <div class="wrap navbar__inner">
+    <a class="navbar__brand" href="index.html" aria-label="Fruitly home">
+      <svg width="34" height="34" viewBox="0 0 100 100" aria-hidden="true"><path d="M58 7C75 12 87 31 87 51C87 73 68 92 45 92C25 92 10 78 10 59C10 46 18 37 29 28C39 20 44 3 58 7Z" fill="#157A3E"/><path d="M58 7C75 12 87 31 87 51C87 73 68 92 45 92C25 92 10 78 10 59C10 46 18 37 29 28C39 20 44 3 58 7Z" fill="#FFC233" transform="translate(23 15) scale(0.585)"/><path d="M56 9C60 2 69 0 76 3C74 11 65 15 56 9Z" fill="#A8C64D"/></svg>
+      <span class="wordmark">Fruitly</span>
+    </a>
+    <nav class="navbar__links" id="site-nav" aria-label="Main">
+      <a href="shop.html">Shop</a>
+      <a href="build.html">Build your box</a>
+      <a href="plans.html">Plans</a>
+      <a href="orders.html">Orders</a>
+    </nav>
+    <div class="navbar__actions">
+      <a class="avatar" href="account.html" aria-label="Account" style="background:var(--green);color:#fff">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8.5" r="3.8"/><path d="M4.8 20c1-3.6 3.8-5.5 7.2-5.5s6.2 1.9 7.2 5.5"/></svg>
+      </a>
+      <a class="avatar boxbadge" data-boxbadge data-count="0" href="build.html" aria-label="Your box">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8 12 4l8.5 4-8.5 4z"/><path d="M3.5 8v8l8.5 4 8.5-4V8"/><path d="M12 12v8"/></svg>
+      </a>
+      <button class="nav-toggle" aria-expanded="false" aria-controls="site-nav" aria-label="Menu">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="section section--tight">
+    <div class="wrap" style="display:flex;align-items:center;gap:20px;flex-wrap:wrap">
+      <span style="width:64px;height:64px;border-radius:999px;background:var(--green);color:#fff;display:inline-flex;align-items:center;justify-content:center;font-family:var(--display);font-variation-settings:'wdth' 112;font-weight:700;font-size:24px" aria-hidden="true">A</span>
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <h1 class="h1" style="font-size:clamp(30px,3vw,42px)">Asha Rao</h1>
+        <span class="small muted">Sample account · 62 mornings delivered</span>
+      </div>
+    </div>
+  </section>
+
+  <section style="padding-bottom:clamp(40px,6vw,72px)">
+    <div class="wrap grid grid-2">
+
+      <div class="card" style="padding:30px 34px 34px;display:flex;flex-direction:column;gap:18px">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+          <span class="label">Address</span>
+          <button type="button" data-checkout style="font:600 14px/1 var(--sans);color:var(--green)">Edit</button>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:16px">
+          <span class="avatar" style="width:44px;height:44px" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10.5 12 4l8 6.5V19a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 19z"/></svg>
+          </span>
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <div style="display:flex;align-items:center;gap:10px">
+              <span style="font-weight:600">Home</span>
+              <span class="pill pill--fresh" style="height:24px;font-size:11px">Default</span>
+            </div>
+            <span class="small muted">14 Lakeview Road, Indiranagar<br>Bengaluru 560038</span>
+          </div>
+        </div>
+        <button class="btn btn--outline btn--sm" type="button" data-checkout style="align-self:flex-start">+ Add address</button>
+      </div>
+
+      <div class="card" style="padding:30px 34px 34px;display:flex;flex-direction:column;gap:18px">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+          <span class="label">Payments</span>
+          <button type="button" data-checkout style="font:600 14px/1 var(--sans);color:var(--green)">Manage</button>
+        </div>
+        <div style="display:flex;align-items:center;gap:16px;padding:14px 18px;border-radius:20px;background:var(--paper)">
+          <span class="avatar" style="width:44px;height:44px;flex:none" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5.5" width="18" height="13" rx="2"/><path d="M3 10h18"/><path d="M7 14.5h4"/></svg>
+          </span>
+          <div style="display:flex;flex-direction:column;gap:3px;flex:1;min-width:0">
+            <span style="font-weight:600;font-size:15px">UPI autopay</span>
+            <span class="small muted">asha@okbank · charged per delivery</span>
+          </div>
+          <span class="pill pill--fresh" style="height:24px;font-size:11px">Default</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:16px;padding:14px 18px;border-radius:20px;background:var(--paper)">
+          <span class="avatar" style="width:44px;height:44px;flex:none" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5.5" width="18" height="13" rx="2"/><path d="M3 10h18"/></svg>
+          </span>
+          <div style="display:flex;flex-direction:column;gap:3px;flex:1;min-width:0">
+            <span style="font-weight:600;font-size:15px">Visa ·· 4421</span>
+            <span class="small muted">Backup method</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="padding:30px 34px 34px;display:flex;flex-direction:column;gap:18px">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+          <span class="label">Preferences</span>
+          <button type="button" data-checkout style="font:600 14px/1 var(--sans);color:var(--green)">Edit</button>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:14px;font-size:15px;color:var(--ink-75)">
+          <div style="display:flex;justify-content:space-between;gap:12px"><span>Cutting style</span><span style="font-weight:600;color:var(--ink)">Cubed</span></div>
+          <div style="display:flex;justify-content:space-between;gap:12px;align-items:center"><span>Never send</span><span class="chip chip--sm chip--never" style="height:32px">Papaya ✕</span></div>
+          <div style="display:flex;justify-content:space-between;gap:12px"><span>Doorstep note</span><span style="font-weight:600;color:var(--ink)">Leave with security</span></div>
+          <div style="display:flex;justify-content:space-between;gap:12px"><span>Delivery alerts</span><span style="font-weight:600;color:var(--green)">On · push at the door</span></div>
+        </div>
+      </div>
+
+      <div class="card card--dark" style="padding:30px 34px 34px;display:flex;flex-direction:column;gap:18px">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+          <span class="label" style="color:rgba(255,255,255,0.5)">Subscription</span>
+          <span class="pill" style="background:rgba(255,194,51,0.18);color:var(--mango);height:26px;font-size:12px">Active</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:6px">
+          <span class="h3" style="font-size:26px">Couple Box</span>
+          <span style="color:rgba(255,255,255,0.62);font-size:15px">Alternate days · Mon Wed Fri · ₹229 per delivery</span>
+        </div>
+        <div style="display:flex;gap:12px;margin-top:auto;flex-wrap:wrap">
+          <a class="btn btn--white btn--sm" href="plans.html">Manage plan</a>
+          <button class="btn btn--ghost-dark btn--sm" type="button" data-checkout>Pause</button>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<dialog class="sheet" id="checkout-sheet" aria-labelledby="sheet-title">
+  <div class="sheet__body">
+    <span class="label label--green">Demo build</span>
+    <h2 class="h3" id="sheet-title">Account changes aren&rsquo;t connected yet.</h2>
+    <p class="muted" style="margin:0">This page shows the account experience with sample data. Addresses, payments and preferences wire up to the Fruitly backend when it ships.</p>
+    <button class="btn btn--green" type="button" data-close autofocus>Got it</button>
+  </div>
+</dialog>
+
+<footer class="footer">
+  <div class="wrap">
+    <div class="footer__band">
+      <a class="navbar__brand" href="index.html" style="color:#fff" aria-label="Fruitly home">
+        <svg width="34" height="34" viewBox="0 0 100 100" aria-hidden="true"><path d="M58 7C75 12 87 31 87 51C87 73 68 92 45 92C25 92 10 78 10 59C10 46 18 37 29 28C39 20 44 3 58 7Z" fill="#FFC233"/><path d="M56 9C60 2 69 0 76 3C74 11 65 15 56 9Z" fill="#A8C64D"/></svg>
+        <span class="wordmark" style="font-size:27px">Fruitly</span>
+      </a>
+      <nav class="footer__links" aria-label="Footer">
+        <a href="shop.html">Shop</a>
+        <a href="plans.html">Plans</a>
+        <a href="orders.html">Orders</a>
+        <a href="account.html">Account</a>
+      </nav>
+      <span class="footer__note">Fresh Fruit. Zero Hassle.</span>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
