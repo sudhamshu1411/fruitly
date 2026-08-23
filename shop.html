@@ -15,6 +15,9 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=Instrument+Sans:ital,wght@0,400;0,500;0,600&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/fruitly.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js" defer></script>
+<script src="js/config.js" defer></script>
+<script src="js/api.js" defer></script>
 <script src="js/fruitly.js" defer></script>
 <script src="js/shop.js" defer></script>
 </head>
@@ -118,92 +121,92 @@
       <!-- Fruits -->
       <div data-group="fruits" class="grid grid-4">
 
-        <article class="card product">
+        <article data-fruit-card="mango" class="card product">
           <div class="product__art" style="background:rgba(255,194,51,0.16)" aria-hidden="true">
             <svg width="70" height="70" viewBox="0 0 100 100"><path d="M58 7C75 12 87 31 87 51C87 73 68 92 45 92C25 92 10 78 10 59C10 46 18 37 29 28C39 20 44 3 58 7Z" fill="#FFC233"/><path d="M56 9C60 2 69 0 76 3C74 11 65 15 56 9Z" fill="#A8C64D"/></svg>
           </div>
           <div class="product__body">
             <span class="pill pill--fresh" style="align-self:flex-start">Fresh today</span>
             <h2 class="h3">Alphonso mango</h2>
-            <p class="product__meta" style="margin:0">Peeled and cubed · 220g cup</p>
+            <p class="product__meta" style="margin:0" data-meta-of="mango">Peeled and cubed · 220g cup</p>
             <div class="product__foot">
-              <span class="price" style="font-size:19px">₹120</span>
+              <span class="price" style="font-size:19px" data-price-of="mango">₹120</span>
               <button class="btn btn--primary btn--sm" type="button" data-add="mango">Add</button>
             </div>
           </div>
         </article>
 
-        <article class="card product">
+        <article data-fruit-card="kiwi" class="card product">
           <div class="product__art" style="background:rgba(168,198,77,0.18)" aria-hidden="true">
             <svg width="64" height="64" viewBox="0 0 100 100"><path d="M50 12C71 12 85 28 85 50C85 72 71 88 50 88C29 88 15 72 15 50C15 28 29 12 50 12Z" fill="#A8C64D"/><circle cx="50" cy="50" r="13" fill="#F4F1EA"/></svg>
           </div>
           <div class="product__body">
             <h2 class="h3" style="margin-top:38px">Kiwi</h2>
-            <p class="product__meta" style="margin:0">Peeled and sliced · 180g cup</p>
+            <p class="product__meta" style="margin:0" data-meta-of="kiwi">Peeled and sliced · 180g cup</p>
             <div class="product__foot">
-              <span class="price" style="font-size:19px">₹90</span>
+              <span class="price" style="font-size:19px" data-price-of="kiwi">₹90</span>
               <button class="btn btn--primary btn--sm" type="button" data-add="kiwi">Add</button>
             </div>
           </div>
         </article>
 
-        <article class="card product">
+        <article data-fruit-card="watermelon" class="card product">
           <div class="product__art" style="background:rgba(255,107,90,0.14)" aria-hidden="true">
             <svg width="68" height="68" viewBox="0 0 100 100"><path d="M50 8C74 8 90 26 90 50C90 74 74 92 50 92C26 92 10 74 10 50C10 26 26 8 50 8Z" fill="#FF6B5A"/><path d="M50 24C64 24 74 35 74 50C74 65 64 76 50 76C36 76 26 65 26 50C26 35 36 24 50 24Z" fill="#FBF8F3" opacity="0.35"/></svg>
           </div>
           <div class="product__body">
             <h2 class="h3" style="margin-top:38px">Watermelon</h2>
-            <p class="product__meta" style="margin:0">Deseeded and cubed · 250g cup</p>
+            <p class="product__meta" style="margin:0" data-meta-of="watermelon">Deseeded and cubed · 250g cup</p>
             <div class="product__foot">
-              <span class="price" style="font-size:19px">₹80</span>
+              <span class="price" style="font-size:19px" data-price-of="watermelon">₹80</span>
               <button class="btn btn--primary btn--sm" type="button" data-add="watermelon">Add</button>
             </div>
           </div>
         </article>
 
-        <article class="card product">
+        <article data-fruit-card="pomegranate" class="card product">
           <div class="product__art" style="background:rgba(142,59,107,0.12)" aria-hidden="true">
             <svg width="66" height="66" viewBox="0 0 100 100"><path d="M50 10C73 10 88 27 88 50C88 73 73 90 50 90C27 90 12 73 12 50C12 27 27 10 50 10Z" fill="#8E3B6B"/><path d="M38 40h24M38 52h24M38 64h24" stroke="#FBF8F3" stroke-width="4" stroke-linecap="round" opacity="0.3"/></svg>
           </div>
           <div class="product__body">
             <h2 class="h3" style="margin-top:38px">Pomegranate</h2>
-            <p class="product__meta" style="margin:0">Hand-seeded · 200g cup</p>
+            <p class="product__meta" style="margin:0" data-meta-of="pomegranate">Hand-seeded · 200g cup</p>
             <div class="product__foot">
-              <span class="price" style="font-size:19px">₹110</span>
+              <span class="price" style="font-size:19px" data-price-of="pomegranate">₹110</span>
               <button class="btn btn--primary btn--sm" type="button" data-add="pomegranate">Add</button>
             </div>
           </div>
         </article>
 
-        <article class="card product">
+        <article data-fruit-card="papaya" class="card product">
           <div class="product__art" style="background:rgba(255,194,51,0.12)" aria-hidden="true">
             <svg width="62" height="62" viewBox="0 0 100 100"><path d="M50 14C72 14 86 30 86 52C86 74 72 88 50 88C28 88 14 74 14 52C14 30 28 14 50 14Z" fill="#F2A93B"/><path d="M50 14C50 6 56 2 62 2M50 14C44 8 36 8 32 12" stroke="#157A3E" stroke-width="4" stroke-linecap="round" fill="none"/></svg>
           </div>
           <div class="product__body">
             <h2 class="h3" style="margin-top:38px">Papaya</h2>
-            <p class="product__meta" style="margin:0">Deseeded and cubed · 250g cup</p>
+            <p class="product__meta" style="margin:0" data-meta-of="papaya">Deseeded and cubed · 250g cup</p>
             <div class="product__foot">
-              <span class="price" style="font-size:19px">₹70</span>
+              <span class="price" style="font-size:19px" data-price-of="papaya">₹70</span>
               <button class="btn btn--primary btn--sm" type="button" data-add="papaya">Add</button>
             </div>
           </div>
         </article>
 
-        <article class="card product">
+        <article data-fruit-card="pineapple" class="card product">
           <div class="product__art" style="background:rgba(168,198,77,0.14)" aria-hidden="true">
             <svg width="64" height="64" viewBox="0 0 100 100"><path d="M50 22C68 22 80 38 80 58C80 78 68 92 50 92C32 92 20 78 20 58C20 38 32 22 50 22Z" fill="#E8B94A"/><path d="M50 22L40 6M50 22L52 4M50 22L62 8" stroke="#157A3E" stroke-width="4" stroke-linecap="round"/><path d="M36 44l28 28M64 44L36 72" stroke="#C79A33" stroke-width="3" stroke-linecap="round" opacity="0.6"/></svg>
           </div>
           <div class="product__body">
             <h2 class="h3" style="margin-top:38px">Pineapple</h2>
-            <p class="product__meta" style="margin:0">Cored and ringed · 220g cup</p>
+            <p class="product__meta" style="margin:0" data-meta-of="pineapple">Cored and ringed · 220g cup</p>
             <div class="product__foot">
-              <span class="price" style="font-size:19px">₹95</span>
+              <span class="price" style="font-size:19px" data-price-of="pineapple">₹95</span>
               <button class="btn btn--primary btn--sm" type="button" data-add="pineapple">Add</button>
             </div>
           </div>
         </article>
 
-        <article class="card product">
+        <article data-fruit-card="grapes" class="card product">
           <div class="product__art" style="background:rgba(142,59,107,0.1)" aria-hidden="true">
             <svg width="30" height="30" viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="#6E2F55"/></svg>
             <svg width="38" height="38" viewBox="0 0 100 100" style="margin-top:14px"><circle cx="50" cy="50" r="40" fill="#8E3B6B"/></svg>
@@ -211,9 +214,9 @@
           </div>
           <div class="product__body">
             <h2 class="h3" style="margin-top:38px">Black grapes</h2>
-            <p class="product__meta" style="margin:0">Washed, seedless · 200g cup</p>
+            <p class="product__meta" style="margin:0" data-meta-of="grapes">Washed, seedless · 200g cup</p>
             <div class="product__foot">
-              <span class="price" style="font-size:19px">₹85</span>
+              <span class="price" style="font-size:19px" data-price-of="grapes">₹85</span>
               <button class="btn btn--primary btn--sm" type="button" data-add="grapes">Add</button>
             </div>
           </div>

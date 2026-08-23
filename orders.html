@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Orders — Fruitly</title>
-<meta name="description" content="Track today's Fruitly from the kitchen to your door, and rate previous deliveries. Demo view with sample data.">
+<meta name="description" content="Track today's Fruitly from the kitchen to your door, and rate previous deliveries.">
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#FBF8F3">
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
@@ -12,7 +12,11 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=Instrument+Sans:ital,wght@0,400;0,500;0,600&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/fruitly.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js" defer></script>
+<script src="js/config.js" defer></script>
+<script src="js/api.js" defer></script>
 <script src="js/fruitly.js" defer></script>
+<script src="js/orders.js" defer></script>
 </head>
 <body>
 
@@ -44,143 +48,17 @@
 
 <main>
   <section class="section section--tight">
-    <div class="wrap" style="display:flex;align-items:center;gap:18px;flex-wrap:wrap">
-      <h1 class="h1">Orders</h1>
-      <span class="pill pill--neutral" style="height:32px">Demo data</span>
-    </div>
-  </section>
-
-  <section style="padding-bottom:24px">
     <div class="wrap">
-      <div class="card" style="padding:36px 40px;display:flex;gap:40px;flex-wrap:wrap">
-        <div style="flex:1 1 340px;display:flex;flex-direction:column;gap:24px;min-width:0">
-          <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
-            <span class="pill pill--fresh">Arriving today</span>
-            <span class="small muted">Fri 21 Aug · Couple Box</span>
-          </div>
-          <h2 class="h2" style="font-variation-settings:'wdth' 114;font-size:clamp(24px,2.4vw,32px)">Out for delivery · 07:40</h2>
-          <div class="timeline">
-            <div class="timeline__item is-done">
-              <span class="timeline__dot"></span>
-              <span class="timeline__label">Peeled</span>
-              <span class="timeline__time">05:10</span>
-            </div>
-            <div class="timeline__item is-done">
-              <span class="timeline__dot"></span>
-              <span class="timeline__label">Sealed &amp; chilled</span>
-              <span class="timeline__time">05:40</span>
-            </div>
-            <div class="timeline__item is-now">
-              <span class="timeline__dot"></span>
-              <span class="timeline__label">Out for delivery</span>
-              <span class="timeline__time">06:55</span>
-            </div>
-            <div class="timeline__item is-todo">
-              <span class="timeline__dot"></span>
-              <span class="timeline__label">At your door</span>
-              <span class="timeline__time">~07:40</span>
-            </div>
-          </div>
-          <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:auto">
-            <button class="btn btn--green btn--sm" type="button" data-checkout>Track live</button>
-            <a class="btn btn--outline btn--sm" href="account.html">Doorstep note</a>
-          </div>
-        </div>
-
-        <div style="flex:1.4 1 420px;position:relative;min-height:340px;border-radius:24px;overflow:hidden;background:var(--sand)">
-          <svg viewBox="0 0 620 360" preserveAspectRatio="xMidYMid slice" aria-hidden="true" style="position:absolute;inset:0;width:100%;height:100%">
-            <path d="M0 90 H620 M0 200 H620 M0 300 H620" stroke="rgba(19,42,29,0.06)" stroke-width="14"/>
-            <path d="M140 0 V360 M330 0 V360 M500 0 V360" stroke="rgba(19,42,29,0.06)" stroke-width="14"/>
-            <path d="M60 320 C 150 280, 180 210, 265 200 S 400 150, 440 120 S 520 80, 545 92" fill="none" stroke="#157A3E" stroke-width="3.5" stroke-dasharray="1 10" stroke-linecap="round"/>
-            <circle cx="60" cy="320" r="7" fill="#FFFFFF" stroke="#157A3E" stroke-width="3"/>
-            <circle cx="330" cy="172" r="10" fill="#FFC233" stroke="#FFFFFF" stroke-width="3"/>
-          </svg>
-          <span style="position:absolute;right:44px;top:44px;width:56px;height:56px;border-radius:999px;background:var(--green);display:inline-flex;align-items:center;justify-content:center;box-shadow:var(--shadow-lift)" aria-hidden="true">
-            <svg width="32" height="32" viewBox="0 0 100 100"><path d="M58 7C75 12 87 31 87 51C87 73 68 92 45 92C25 92 10 78 10 59C10 46 18 37 29 28C39 20 44 3 58 7Z" fill="#FFC233"/></svg>
-          </span>
-          <span class="pill" style="position:absolute;left:20px;top:20px;background:rgba(19,42,29,0.5);color:rgba(255,255,255,0.9)">Live map — placeholder</span>
-          <span style="position:absolute;left:20px;bottom:20px;background:#fff;border-radius:16px;padding:12px 18px;display:inline-flex;align-items:center;gap:12px;box-shadow:var(--shadow-lift);font:500 14px/1 var(--sans)">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="9" width="12" height="8" rx="1.5"/><path d="M15.5 11.5h3l2 2.5v3h-5z"/><circle cx="7" cy="18.5" r="1.6"/><circle cx="17.5" cy="18.5" r="1.6"/></svg>
-            3 stops away · Ravi
-          </span>
-        </div>
-      </div>
+      <h1 class="h1">Orders</h1>
     </div>
   </section>
 
   <section style="padding-bottom:clamp(40px,6vw,72px)">
-    <div class="wrap">
-      <div class="card" style="padding:8px 40px">
-        <p class="label" style="padding:26px 0 6px;margin:0">Previous deliveries</p>
-        <div class="rowlist">
-          <div class="row">
-            <span class="datechip">Wed<b>19</b></span>
-            <div class="row__main">
-              <span style="font-weight:600">Couple Box</span>
-              <span class="small muted">Delivered 07:32 · mango, kiwi, grapes</span>
-            </div>
-            <span class="pill pill--fresh">Delivered</span>
-            <button type="button" data-checkout style="font:600 14px/1 var(--sans);color:var(--green)">Rate this delivery</button>
-          </div>
-          <div class="row">
-            <span class="datechip">Mon<b>17</b></span>
-            <div class="row__main">
-              <span style="font-weight:600">Couple Box</span>
-              <span class="small muted">Delivered 07:26 · mango, papaya swap, kiwi</span>
-            </div>
-            <span class="pill pill--fresh">Delivered</span>
-            <span aria-label="Rated 5 out of 5" style="display:inline-flex;gap:3px">
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="#FFC233" aria-hidden="true"><path d="M12 3.6l2.6 5.3 5.8.8-4.2 4.1 1 5.8L12 16.9 6.8 19.6l1-5.8-4.2-4.1 5.8-.8z"/></svg>
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="#FFC233" aria-hidden="true"><path d="M12 3.6l2.6 5.3 5.8.8-4.2 4.1 1 5.8L12 16.9 6.8 19.6l1-5.8-4.2-4.1 5.8-.8z"/></svg>
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="#FFC233" aria-hidden="true"><path d="M12 3.6l2.6 5.3 5.8.8-4.2 4.1 1 5.8L12 16.9 6.8 19.6l1-5.8-4.2-4.1 5.8-.8z"/></svg>
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="#FFC233" aria-hidden="true"><path d="M12 3.6l2.6 5.3 5.8.8-4.2 4.1 1 5.8L12 16.9 6.8 19.6l1-5.8-4.2-4.1 5.8-.8z"/></svg>
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="#FFC233" aria-hidden="true"><path d="M12 3.6l2.6 5.3 5.8.8-4.2 4.1 1 5.8L12 16.9 6.8 19.6l1-5.8-4.2-4.1 5.8-.8z"/></svg>
-            </span>
-          </div>
-          <div class="row">
-            <span class="datechip">Fri<b>14</b></span>
-            <div class="row__main">
-              <span style="font-weight:600">Couple Box</span>
-              <span class="small muted">Delivered 07:41 · mango, kiwi, pomegranate</span>
-            </div>
-            <span class="pill pill--fresh">Delivered</span>
-            <span aria-label="Rated 4 out of 5" style="display:inline-flex;gap:3px">
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="#FFC233" aria-hidden="true"><path d="M12 3.6l2.6 5.3 5.8.8-4.2 4.1 1 5.8L12 16.9 6.8 19.6l1-5.8-4.2-4.1 5.8-.8z"/></svg>
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="#FFC233" aria-hidden="true"><path d="M12 3.6l2.6 5.3 5.8.8-4.2 4.1 1 5.8L12 16.9 6.8 19.6l1-5.8-4.2-4.1 5.8-.8z"/></svg>
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="#FFC233" aria-hidden="true"><path d="M12 3.6l2.6 5.3 5.8.8-4.2 4.1 1 5.8L12 16.9 6.8 19.6l1-5.8-4.2-4.1 5.8-.8z"/></svg>
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="#FFC233" aria-hidden="true"><path d="M12 3.6l2.6 5.3 5.8.8-4.2 4.1 1 5.8L12 16.9 6.8 19.6l1-5.8-4.2-4.1 5.8-.8z"/></svg>
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="rgba(19,42,29,0.25)" stroke-width="1.6" aria-hidden="true"><path d="M12 3.6l2.6 5.3 5.8.8-4.2 4.1 1 5.8L12 16.9 6.8 19.6l1-5.8-4.2-4.1 5.8-.8z"/></svg>
-            </span>
-          </div>
-          <div class="row">
-            <span class="datechip">Wed<b>12</b></span>
-            <div class="row__main">
-              <span style="font-weight:600">Couple Box</span>
-              <span class="small muted">Delivered 07:35 · mango, kiwi, grapes</span>
-            </div>
-            <span class="pill pill--fresh">Delivered</span>
-            <span aria-label="Rated 5 out of 5" style="display:inline-flex;gap:3px">
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="#FFC233" aria-hidden="true"><path d="M12 3.6l2.6 5.3 5.8.8-4.2 4.1 1 5.8L12 16.9 6.8 19.6l1-5.8-4.2-4.1 5.8-.8z"/></svg>
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="#FFC233" aria-hidden="true"><path d="M12 3.6l2.6 5.3 5.8.8-4.2 4.1 1 5.8L12 16.9 6.8 19.6l1-5.8-4.2-4.1 5.8-.8z"/></svg>
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="#FFC233" aria-hidden="true"><path d="M12 3.6l2.6 5.3 5.8.8-4.2 4.1 1 5.8L12 16.9 6.8 19.6l1-5.8-4.2-4.1 5.8-.8z"/></svg>
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="#FFC233" aria-hidden="true"><path d="M12 3.6l2.6 5.3 5.8.8-4.2 4.1 1 5.8L12 16.9 6.8 19.6l1-5.8-4.2-4.1 5.8-.8z"/></svg>
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="#FFC233" aria-hidden="true"><path d="M12 3.6l2.6 5.3 5.8.8-4.2 4.1 1 5.8L12 16.9 6.8 19.6l1-5.8-4.2-4.1 5.8-.8z"/></svg>
-            </span>
-          </div>
-        </div>
-      </div>
+    <div class="wrap" id="orders-root">
+      <p class="lede">Fetching your deliveries…</p>
     </div>
   </section>
 </main>
-
-<dialog class="sheet" id="checkout-sheet" aria-labelledby="sheet-title">
-  <div class="sheet__body">
-    <span class="label label--green">Demo build</span>
-    <h2 class="h3" id="sheet-title">Live tracking isn&rsquo;t connected yet.</h2>
-    <p class="muted" style="margin:0">This page shows the order experience with sample data. Live maps, ratings and delivery events wire up to the Fruitly backend when it ships.</p>
-    <button class="btn btn--green" type="button" data-close autofocus>Got it</button>
-  </div>
-</dialog>
 
 <footer class="footer">
   <div class="wrap">
