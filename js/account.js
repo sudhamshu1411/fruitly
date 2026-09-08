@@ -116,25 +116,23 @@
         var top = el("div");
         top.style.cssText = "display:flex;align-items:center;gap:10px";
         top.appendChild(el("span", null, a.label)).style.fontWeight = "600";
-        if (a.is_default) top.appendChild(el("span", "pill pill--fresh", "Default")).style.cssText += "height:24px;font-size:11px";
+        if (a.is_default) top.appendChild(el("span", "pill pill--fresh", "Default")).style.cssText += "height:26px";
         col.appendChild(top);
         col.appendChild(el("span", "small muted", a.line1 + (a.line2 ? ", " + a.line2 : "") + ", " + a.city + " " + a.pincode));
         row.appendChild(col);
         var btns = el("div");
         btns.style.cssText = "display:flex;gap:12px;align-items:center";
         if (!a.is_default) {
-          var mk = el("button", null, "Make default");
+          var mk = el("button", "textbtn", "Make default");
           mk.type = "button";
-          mk.style.cssText = "font:600 13px/1 var(--sans);color:var(--green)";
           mk.addEventListener("click", async function () {
             try { await API.makeDefaultAddress(a.id); addresses = await API.addresses(); render(); }
             catch (e) { F.toast(e.message); }
           });
           btns.appendChild(mk);
         }
-        var del = el("button", null, "Remove");
+        var del = el("button", "textbtn textbtn--danger", "Remove");
         del.type = "button";
-        del.style.cssText = "font:600 13px/1 var(--sans);color:#B3330E";
         del.addEventListener("click", async function () {
           try { await API.deleteAddress(a.id); addresses = await API.addresses(); render(); }
           catch (e) { F.toast(e.message); }

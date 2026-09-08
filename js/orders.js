@@ -175,15 +175,13 @@
     }
 
     function stars(o) {
-      var wrap = el("span");
-      wrap.style.cssText = "display:inline-flex;gap:3px";
+      var wrap = el("span", "stars");
       var current = o.ratings && o.ratings.length ? o.ratings[0].stars : 0;
       wrap.setAttribute("aria-label", current ? "Rated " + current + " of 5" : "Rate this delivery");
       for (var i = 1; i <= 5; i++) {
         (function (k) {
-          var b = el("button");
+          var b = el("button", "star");
           b.type = "button";
-          b.style.cssText = "width:24px;height:24px;display:inline-flex;align-items:center;justify-content:center";
           b.setAttribute("aria-label", k + (k === 1 ? " star" : " stars"));
           b.innerHTML = k <= current
             ? '<svg width="17" height="17" viewBox="0 0 24 24" fill="#FFC233" aria-hidden="true"><path d="M12 3.6l2.6 5.3 5.8.8-4.2 4.1 1 5.8L12 16.9 6.8 19.6l1-5.8-4.2-4.1 5.8-.8z"/></svg>'

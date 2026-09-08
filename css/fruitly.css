@@ -39,6 +39,26 @@
   --shadow-rest: 0 1px 2px rgba(18, 37, 26, 0.04), 0 18px 40px -26px rgba(18, 37, 26, 0.2);
   --shadow-lift: 0 2px 4px rgba(18, 37, 26, 0.06), 0 30px 60px -28px rgba(18, 37, 26, 0.36);
 
+  /* spacing — one 4pt-based scale, fluid where it should breathe */
+  --space-2xs: 4px;
+  --space-xs: 8px;
+  --space-sm: 12px;
+  --space-md: 16px;
+  --space-lg: clamp(20px, 2.2vw, 24px);
+  --space-xl: clamp(24px, 3vw, 32px);
+  --space-2xl: clamp(32px, 4.5vw, 48px);
+  --space-3xl: clamp(40px, 6vw, 72px);
+  --gutter: clamp(18px, 4.5vw, 64px);   /* page side padding */
+  --card-pad: clamp(22px, 2.6vw, 34px); /* inner padding of a card */
+
+  /* the reading column; content wider than this is a layout, not prose */
+  --measure: 68ch;
+  --page-max: 1312px;
+
+  /* control sizing — grows on touch, stays tight for the mouse */
+  --tap: 40px;
+  --day-size: 34px;
+
   /* motion */
   --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
 
@@ -46,6 +66,11 @@
   --sans: "Instrument Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
   --display: "Archivo", "Archivo Black", system-ui, sans-serif;
   --serif: "Instrument Serif", Georgia, serif;
+}
+
+/* Touch devices get real hit areas; pointer devices keep the tighter rhythm. */
+@media (pointer: coarse) {
+  :root { --tap: 44px; --day-size: 42px; }
 }
 
 /* ---------- reset ---------- */
@@ -68,14 +93,20 @@ input, textarea { font: inherit; color: inherit; }
 ::selection { background: rgba(255, 194, 51, 0.4); }
 
 /* ---------- layout ---------- */
-.wrap { max-width: 1312px; margin-inline: auto; padding-inline: clamp(20px, 4.5vw, 64px); }
-.section { padding-block: clamp(40px, 6vw, 72px); }
-.section--tight { padding-block: clamp(28px, 4vw, 44px); }
+.wrap {
+  max-width: var(--page-max);
+  margin-inline: auto;
+  padding-inline: max(var(--gutter), env(safe-area-inset-left), env(safe-area-inset-right));
+}
+.section { padding-block: var(--space-3xl); }
+.section--tight { padding-block: clamp(24px, 4vw, 44px); }
 
-.grid { display: grid; gap: 24px; }
-.grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-.grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-.grid-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.grid { display: grid; gap: var(--space-lg); }
+/* auto-fit keeps cards at a comfortable size at every width, so the layout
+   reflows continuously instead of snapping at two hard breakpoints. */
+.grid-2 { grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); }
+.grid-3 { grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); }
+.grid-4 { grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr)); }
 
 /* ---------- type ---------- */
 .display {
@@ -117,7 +148,7 @@ input, textarea { font: inherit; color: inherit; }
 }
 .lede { font-size: clamp(16px, 1.35vw, 19px); line-height: 1.55; color: var(--ink-60); max-width: 60ch; text-wrap: pretty; margin: 0; }
 .label {
-  font: 600 11px/1 var(--sans);
+  font: 600 clamp(11.5px, 0.78vw, 12px)/1 var(--sans);
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--ink-42);
@@ -148,7 +179,11 @@ input, textarea { font: inherit; color: inherit; }
   letter-spacing: -0.055em;
 }
 .navbar__links { display: flex; align-items: center; gap: clamp(18px, 2.4vw, 34px); }
-.navbar__links a { font: 500 15px/1 var(--sans); color: var(--ink-75); padding: 8px 2px; }
+.navbar__links a {
+  font: 500 15px/1 var(--sans); color: var(--ink-75);
+  display: inline-flex; align-items: center;
+  min-height: var(--tap); padding: 0 2px;
+}
 .navbar__links a:hover { color: var(--green); }
 .navbar__links a[aria-current="page"] { color: var(--green); font-weight: 600; }
 .navbar__actions { display: flex; align-items: center; gap: 14px; }
@@ -199,7 +234,7 @@ input, textarea { font: inherit; color: inherit; }
 
 .chip {
   display: inline-flex; align-items: center; gap: 8px;
-  height: 44px; padding: 0 20px;
+  height: max(44px, var(--tap)); padding: 0 20px;
   border-radius: var(--r-chip);
   background: var(--sand);
   font: 500 15px/1 var(--sans);
@@ -210,7 +245,7 @@ input, textarea { font: inherit; color: inherit; }
 .chip:active { transform: scale(0.97); }
 .chip.is-on { background: var(--leaf); color: #fff; }
 .chip.is-on:hover { background: #1d3c2b; }
-.chip--sm { height: 36px; padding: 0 16px; font-size: 14px; }
+.chip--sm { height: max(36px, var(--tap)); padding: 0 16px; font-size: 14px; }
 .chip--never { background: var(--berry-tint); color: var(--berry); }
 .chip--never:hover { background: rgba(142, 59, 107, 0.16); }
 .chip--add { background: transparent; border: 1px dashed rgba(19, 42, 29, 0.25); color: var(--ink-50); }
@@ -219,7 +254,7 @@ input, textarea { font: inherit; color: inherit; }
   display: inline-flex; align-items: center; gap: 7px;
   height: 30px; padding: 0 13px;
   border-radius: 999px;
-  font: 600 12px/1 var(--sans);
+  font: 600 clamp(11.5px, 0.8vw, 12px)/1 var(--sans);
   white-space: nowrap;
 }
 .pill--fresh, .pill--ok { background: var(--green-tint); color: var(--green); }
@@ -264,9 +299,13 @@ input, textarea { font: inherit; color: inherit; }
 .datechip b { font: 700 15px/1 var(--sans); color: var(--ink); }
 
 /* ---------- day dots / week strip ---------- */
-.days { display: flex; gap: 7px; }
+.days { display: flex; gap: clamp(4px, 1.2vw, 7px); }
 .day {
-  width: 34px; height: 34px; border-radius: 999px;
+  flex: 1 1 0;
+  min-width: 0;
+  max-width: var(--day-size);
+  aspect-ratio: 1;
+  border-radius: 999px;
   display: inline-flex; align-items: center; justify-content: center;
   background: var(--sand); color: var(--ink-42);
   font: 600 12px/1 var(--sans);
@@ -281,7 +320,7 @@ button.day:active { transform: scale(0.94); }
 /* ---------- stepper ---------- */
 .stepper { display: inline-flex; align-items: center; gap: 14px; }
 .stepper__btn {
-  width: 36px; height: 36px; border-radius: 999px;
+  width: var(--tap); height: var(--tap); border-radius: 999px;
   display: inline-flex; align-items: center; justify-content: center;
   font: 500 18px/1 var(--sans);
   transition: transform 120ms var(--ease), background 140ms var(--ease);
@@ -292,6 +331,44 @@ button.day:active { transform: scale(0.94); }
 .stepper__btn--plus { background: var(--green); color: #fff; }
 .stepper__btn--plus:hover { background: #106232; }
 .stepper__count { font: 600 16px/1 var(--sans); min-width: 58px; text-align: center; }
+
+/* Inline text actions ("Browse all fruit →") still need a finger-sized target. */
+@media (pointer: coarse) {
+  .wrap a:not(.btn):not(.navbar__brand):not(.avatar),
+  .footer__links a,
+  main > div a:not(.btn):not(.navbar__brand) {
+    display: inline-flex; align-items: center; justify-content: inherit;
+    min-height: var(--tap);
+  }
+}
+
+/* ---------- rating stars ---------- */
+.stars { display: inline-flex; gap: 2px; }
+.star {
+  width: var(--tap); height: var(--tap);
+  display: inline-flex; align-items: center; justify-content: center;
+  border-radius: 999px;
+  transition: background 140ms var(--ease), transform 120ms var(--ease);
+}
+.star:hover { background: rgba(255, 194, 51, 0.16); }
+.star:active { transform: scale(0.9); }
+
+/* Text-style actions ("Skip", "Remove", "Reorder") — look like links, sized like controls. */
+.textbtn {
+  display: inline-flex; align-items: center;
+  min-height: var(--tap);
+  font: 600 14px/1 var(--sans);
+  color: var(--green);
+  border-radius: 8px;
+  transition: color 140ms var(--ease);
+}
+.textbtn:hover { color: var(--orange); }
+.textbtn--danger { color: #B3330E; }
+.textbtn--danger:hover { color: #8f2909; }
+
+/* Text-style actions inside rows still need a real hit area. */
+.row button:not(.btn):not(.day):not(.stepper__btn),
+.row a:not(.btn) { min-height: var(--tap); display: inline-flex; align-items: center; }
 
 /* ---------- status timeline ---------- */
 .timeline { display: flex; flex-direction: column; gap: 16px; }
@@ -309,7 +386,7 @@ button.day:active { transform: scale(0.94); }
 .table th {
   text-align: left; padding: 10px 0;
   border-bottom: 1px solid var(--hairline);
-  font: 600 11px/1 var(--sans); letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-42);
+  font: 600 11.5px/1 var(--sans); letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-42);
 }
 .table td { padding: 13px 0; border-bottom: 1px solid var(--hairline-soft); font-size: 14.5px; }
 .table tr:last-child td { border-bottom: 0; }
@@ -339,7 +416,8 @@ button.day:active { transform: scale(0.94); }
   position: relative;
   border-radius: var(--r-band);
   overflow: hidden;
-  min-height: clamp(360px, 34vw, 480px);
+  aspect-ratio: 5 / 4;
+  max-height: 520px;
   background: linear-gradient(150deg, #F4F1EA 0%, #EAE2CF 58%, #E4D9C0 100%);
 }
 .hero__stamp {
@@ -372,14 +450,15 @@ button.day:active { transform: scale(0.94); }
 .band--leaf { background: var(--leaf); }
 
 /* ---------- admin shell ---------- */
-.admin { display: flex; min-height: 100vh; }
+.admin { display: flex; min-height: 100dvh; }
 .admin__side {
   flex: 0 0 248px;
   background: var(--leaf); color: #fff;
   display: flex; flex-direction: column; gap: 28px;
   padding: 28px 20px;
-  position: sticky; top: 0; height: 100vh; overflow-y: auto;
+  position: sticky; top: 0; height: 100dvh; overflow-y: auto;
 }
+.admin__side > a:first-child { min-height: var(--tap); align-items: center; }
 .admin__nav { display: flex; flex-direction: column; gap: 4px; }
 .admin__nav a {
   display: flex; align-items: center; gap: 13px;
@@ -390,7 +469,13 @@ button.day:active { transform: scale(0.94); }
 .admin__nav a:hover { background: rgba(255, 255, 255, 0.07); color: #fff; }
 .admin__nav a[aria-current="page"] { background: rgba(255, 255, 255, 0.12); color: #fff; font-weight: 600; }
 .admin__nav a[aria-current="page"] svg { color: var(--mango); }
-.admin__main { flex: 1; min-width: 0; padding: 36px clamp(20px, 3.2vw, 44px) 48px; display: flex; flex-direction: column; gap: 24px; }
+.admin__main {
+  flex: 1; min-width: 0;
+  /* dashboards get unreadable when rows stretch across an ultrawide display */
+  max-width: 1600px;
+  padding: var(--space-xl) clamp(18px, 3.2vw, 44px) var(--space-2xl);
+  display: flex; flex-direction: column; gap: var(--space-lg);
+}
 .stat { display: flex; flex-direction: column; gap: 10px; padding: 22px 24px 24px; }
 .stat__num { font-family: var(--display); font-variation-settings: "wdth" 114; font-weight: 800; font-size: clamp(30px, 2.6vw, 38px); line-height: 1; letter-spacing: -0.03em; }
 .stagebar { display: flex; gap: 2px; height: 40px; border-radius: 12px; overflow: hidden; }
@@ -401,6 +486,7 @@ button.day:active { transform: scale(0.94); }
 /* ---------- dialog ---------- */
 dialog.sheet {
   border: 0; padding: 0;
+  max-height: 88dvh; overflow-y: auto;
   border-radius: var(--r-card);
   max-width: 440px; width: calc(100vw - 40px);
   box-shadow: var(--shadow-lift);
@@ -421,19 +507,46 @@ dialog.sheet::backdrop { background: rgba(19, 42, 29, 0.4); }
 }
 .toast.is-show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-/* ---------- reveal ---------- */
+/* ---------- motion ---------- */
 @media (prefers-reduced-motion: no-preference) {
   .reveal { opacity: 0; transform: translateY(8px); transition: opacity 240ms var(--ease), transform 240ms var(--ease); }
   .reveal.is-in { opacity: 1; transform: none; }
 }
+/* Respect the OS setting everywhere, not just for the reveal. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
 
-/* ---------- responsive ---------- */
+/* ---------- component-level adaptation ----------
+   Cards respond to the space they are given, not the size of the window —
+   so a product card in a sidebar behaves like a product card on a phone. */
+.product { container-type: inline-size; }
+@container (max-width: 230px) {
+  .product__art { height: 120px; }
+  .product__foot { flex-direction: column; align-items: stretch; gap: 10px; }
+  .product__foot .btn { width: 100%; }
+}
+
+.stat { container-type: inline-size; }
+@container (max-width: 200px) {
+  .stat__num { font-size: 30px; }
+}
+
+/* Pipeline segments stay visible even when a stage holds a single box. */
+.stagebar > span { min-width: 4px; }
+
+/* ---------- viewport layout ---------- */
 @media (max-width: 1080px) {
-  .grid-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .grid-3 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .hero { grid-template-columns: 1fr; }
+  .hero__art { aspect-ratio: 16 / 10; }
   .admin__side { flex-basis: 220px; }
 }
+
 @media (max-width: 860px) {
   .navbar__links {
     display: none;
@@ -441,22 +554,115 @@ dialog.sheet::backdrop { background: rgba(19, 42, 29, 0.4); }
     background: var(--paper);
     border-bottom: 1px solid var(--hairline);
     flex-direction: column; align-items: stretch; gap: 0;
-    padding: 10px clamp(20px, 4.5vw, 64px) 18px;
+    padding: 10px var(--gutter) 18px;
+    box-shadow: var(--shadow-rest);
+    max-height: calc(100dvh - 100%); overflow-y: auto;
   }
-  .navbar__links a { padding: 13px 2px; font-size: 16px; }
+  .navbar__links a { padding: 14px 2px; font-size: 16px; }
   .navbar.is-open .navbar__links { display: flex; }
   .nav-toggle { display: inline-flex; }
   .navbar__cta { display: none; }
+
   .admin { flex-direction: column; }
-  .admin__side { position: static; height: auto; flex-basis: auto; }
-  .admin__nav { flex-direction: row; flex-wrap: wrap; }
+  .admin__side {
+    position: sticky; top: 0; z-index: 30;
+    height: auto; flex-basis: auto;
+    flex-direction: row; align-items: center; flex-wrap: wrap;
+    gap: var(--space-sm); padding: 12px var(--gutter);
+  }
+  .admin__nav { flex-direction: row; flex-wrap: wrap; gap: 6px; }
+  .admin__nav a { height: max(38px, var(--tap)); padding: 0 12px; font-size: 14px; }
+  .admin__side > a:first-child { min-height: var(--tap); }
+  /* the ops identity card is desktop chrome; the header already names the user */
+  .admin__side > div:last-child { margin-top: 0; margin-left: auto; }
 }
+
 @media (max-width: 620px) {
-  .grid-4, .grid-3, .grid-2 { grid-template-columns: 1fr; }
-  .btn { height: 50px; padding: 0 24px; }
+  .btn { height: max(48px, var(--tap)); padding: 0 22px; }
+  .btn--sm { height: max(44px, var(--tap)); padding: 0 18px; }
   .hero__ticket { left: 12px; right: 12px; bottom: 12px; }
-  .band { padding: 28px 22px; }
+  .band { padding: var(--space-xl) var(--space-lg); }
   .row { flex-wrap: wrap; row-gap: 10px; }
   .row__main { flex: 1 1 calc(100% - 62px); }
-  .card--pad, .card[style*="padding:30px 34px"], .card[style*="padding:36px 40px"] { padding-left: 22px !important; padding-right: 22px !important; }
+  /* inline padding written into the markup is too generous on a phone */
+  .card--pad,
+  .card[style*="padding:30px 34px"],
+  .card[style*="padding:36px 40px"],
+  .card[style*="padding:32px 34px"],
+  .card[style*="padding:28px 32px"],
+  .card[style*="padding:26px 30px"],
+  .card[style*="padding:8px 34px"],
+  .card[style*="padding:8px 40px"] {
+    padding-left: var(--space-lg) !important;
+    padding-right: var(--space-lg) !important;
+  }
+  .footer__band { padding: var(--space-xl) var(--space-lg); gap: var(--space-lg); }
+  /* a sticky summary eats a phone screen — let it scroll with the page */
+  aside[style*="position:sticky"] { position: static !important; max-width: none !important; }
+}
+
+/* On phones the week reads better as two generous rows (M T W T / F S S)
+   than as seven circles too small to hit. */
+@media (max-width: 460px) {
+  .days {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 6px;
+  }
+  .day { max-width: none; width: 100%; }
+}
+
+@media (max-width: 380px) {
+  :root { --card-pad: 18px; }
+  .card--pad,
+  .card[style*="padding:30px 34px"],
+  .card[style*="padding:32px 34px"],
+  .card[style*="padding:28px 32px"],
+  .card[style*="padding:36px 40px"] {
+    padding-left: 16px !important; padding-right: 16px !important;
+  }
+}
+
+@media (max-width: 400px) {
+  .navbar__inner { min-height: 66px; gap: 8px; }
+  .wordmark { font-size: 21px; }
+  .avatar { width: max(38px, var(--tap)); height: max(38px, var(--tap)); }
+  .navbar__actions { gap: 6px; }
+  .nav-toggle { width: var(--tap); }
+}
+
+/* ---------- short viewports (phone in landscape, split screen) ----------
+   Vertical space is the scarce resource here: shrink the chrome, not the content. */
+@media (max-height: 560px) and (orientation: landscape) {
+  .navbar { position: static; }
+  .navbar__inner { min-height: 60px; }
+  .section { padding-block: var(--space-xl); }
+  .hero { grid-template-columns: minmax(0, 1fr) minmax(0, 46%); align-items: center; gap: var(--space-xl); }
+  .hero__art { aspect-ratio: auto; height: 100%; min-height: 220px; max-height: none; }
+  /* the ticket stays anchored to the art; the stamp would collide with it here */
+  .hero__ticket { inset: auto 12px 12px; padding: 14px 18px; gap: 10px; }
+  .hero__stamp { display: none; }
+  .display { font-size: clamp(26px, 4.2vw, 38px); }
+  .lede { font-size: 15px; }
+  .hero__proof { display: none; }
+  aside[style*="position:sticky"] { position: static !important; }
+  .admin__side { position: static; }
+  dialog.sheet { max-height: 88dvh; overflow-y: auto; }
+}
+
+/* ---------- very large displays ----------
+   Keep the reading measure honest; let the frame breathe instead of stretching. */
+@media (min-width: 1800px) {
+  :root { --page-max: 1440px; }
+  .hero { gap: var(--space-3xl); }
+}
+@media (min-width: 2400px) {
+  :root { --page-max: 1560px; }
+  body { font-size: 17px; }
+}
+
+/* ---------- bottom safe area on notched phones ---------- */
+@supports (padding: env(safe-area-inset-bottom)) {
+  .footer { padding-bottom: max(clamp(28px, 4vw, 56px), env(safe-area-inset-bottom)); }
+  .admin__main { padding-bottom: max(var(--space-2xl), env(safe-area-inset-bottom)); }
 }

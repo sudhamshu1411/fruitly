@@ -160,9 +160,8 @@
       var qh = el("div");
       qh.style.cssText = "display:flex;align-items:center;justify-content:space-between;gap:16px;padding-bottom:14px";
       qh.appendChild(el("span", "label", "Order queue"));
-      var re = el("button", null, "Refresh");
+      var re = el("button", "textbtn", "Refresh");
       re.type = "button";
-      re.style.cssText = "font:600 13px/1 var(--sans);color:var(--green)";
       re.addEventListener("click", refresh);
       qh.appendChild(re);
       q.appendChild(qh);
@@ -188,16 +187,15 @@
         if (["placed", "preparing", "packed", "out_for_delivery"].indexOf(o.status) >= 0) {
           var adv = el("button", "btn btn--green btn--sm", "Advance");
           adv.type = "button";
-          adv.style.cssText += ";height:38px;padding:0 16px;font-size:13px";
+          adv.style.cssText += ";padding:0 16px;font-size:13px";
           adv.addEventListener("click", async function () {
             adv.disabled = true;
             try { await API.advanceOrder(o.id); await refresh(); }
             catch (e) { if (F) F.toast(e.message); adv.disabled = false; }
           });
           r.appendChild(adv);
-          var fail = el("button", null, "Fail");
+          var fail = el("button", "textbtn textbtn--danger", "Fail");
           fail.type = "button";
-          fail.style.cssText = "font:600 13px/1 var(--sans);color:#B3330E";
           fail.addEventListener("click", async function () {
             try { await API.failOrder(o.id); await refresh(); }
             catch (e) { if (F) F.toast(e.message); }

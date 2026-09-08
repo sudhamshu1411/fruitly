@@ -184,9 +184,8 @@
         row.appendChild(el("span", "pill " + (skipped ? "pill--warn" : sub.status === "paused" ? "pill--neutral" : "pill--fresh"),
           skipped ? "Skipped" : sub.status === "paused" ? "Paused" : "Scheduled"));
         if (sub.status !== "paused") {
-          var b = el("button", null, skipped ? "Undo" : "Skip");
+          var b = el("button", "textbtn", skipped ? "Undo" : "Skip");
           b.type = "button";
-          b.style.cssText = "font:600 14px/1 var(--sans);color:var(--green)";
           b.addEventListener("click", function () {
             act(b, function () {
               return skipped ? API.unskip(sub.id, dISO) : API.skip(sub.id, dISO);
@@ -202,7 +201,7 @@
 
       /* ------- right column ------- */
       var right = el("div");
-      right.style.cssText = "flex:1 1 320px;max-width:440px;display:flex;flex-direction:column;gap:24px";
+      right.style.cssText = "flex:1 1 380px;max-width:440px;display:flex;flex-direction:column;gap:24px";
 
       /* days + cutting editor */
       var prefs = el("div", "card");
@@ -274,9 +273,9 @@
         });
         away.appendChild(pauseRow);
       }
-      var cancel = el("button", null, "Cancel plan");
+      var cancel = el("button", "textbtn textbtn--danger", "Cancel plan");
       cancel.type = "button";
-      cancel.style.cssText = "font:600 14px/1 var(--sans);color:#B3330E;align-self:flex-start";
+      cancel.style.alignSelf = "flex-start";
       cancel.addEventListener("click", function () {
         if (!confirm("Cancel your Fruitly plan? Tomorrow's box (if locked) still arrives; nothing else will.")) return;
         act(cancel, function () { return API.cancelSubscription(sub.id); }, "Plan cancelled.");
