@@ -44,6 +44,7 @@ value becomes money.
 | Table wipes | `TRUNCATE` is not governed by RLS, so it is revoked from `anon`/`authenticated` on every table (`0006`). |
 | Signup abuse | `signup` calls `admin.createUser`, which bypasses Supabase Auth's own rate limits — so it throttles itself: 5 attempts an hour and 20 a day per IP, keyed on a SHA-256 so no raw address is stored (`0007`). |
 | XSS | Every value from the database or a user is written with `textContent` / DOM properties. No user- or catalogue-supplied string is ever concatenated into `innerHTML`. |
+| Order spam | `place_one_time_order` caps a user at 10 one-time orders per rolling 24h (`0008`). Subscriptions were already bounded by the one-active-plan index; one-time orders had no ceiling, so a signed-in account could loop the RPC and mint unlimited kitchen tickets. Cron-generated subscription deliveries do not count against the cap. |
 
 Run `supabase` advisors after any migration; `0004_hardening.sql` pins
 `search_path` on helpers and keeps `is_staff()` away from `anon`.
