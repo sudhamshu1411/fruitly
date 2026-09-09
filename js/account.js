@@ -42,7 +42,7 @@
       inp.type = "text";
       inp.value = value || "";
       inp.placeholder = placeholder || "";
-      inp.style.cssText = "height:48px;padding:0 18px;border-radius:var(--r-input);border:1px solid rgba(19,42,29,0.14);background:#fff;font:400 15px/1 var(--sans)";
+      inp.style.cssText = "height:48px;padding:0 18px;border-radius:var(--r-input);border:1px solid rgba(19,42,29,0.14);background:#fff;font:400 calc(15px * var(--ui))/1 var(--sans)";
       wrap.appendChild(inp);
       return wrap;
     }
@@ -52,12 +52,12 @@
       head.innerHTML = "";
       var initial = (profile.full_name || session.user.email || "F").trim().charAt(0).toUpperCase();
       var av = el("span", null, initial);
-      av.style.cssText = "width:64px;height:64px;border-radius:999px;background:var(--green);color:#fff;display:inline-flex;align-items:center;justify-content:center;font-family:var(--display);font-variation-settings:'wdth' 112;font-weight:700;font-size:24px";
+      av.style.cssText = "width:64px;height:64px;border-radius:999px;background:var(--green);color:#fff;display:inline-flex;align-items:center;justify-content:center;font-family:var(--display);font-variation-settings:'wdth' 112;font-weight:700;font-size:calc(24px * var(--ui))";
       head.appendChild(av);
       var col = el("div");
       col.style.cssText = "display:flex;flex-direction:column;gap:6px";
       var h = el("h1", "h1", profile.full_name || "Your account");
-      h.style.fontSize = "clamp(30px,3vw,42px)";
+      h.style.fontSize = "calc(clamp(30px,3vw,42px) * var(--ui))";
       col.appendChild(h);
       var since = new Date(profile.created_at).toLocaleDateString("en-IN", { month: "long", year: "numeric" });
       col.appendChild(el("span", "small muted", session.user.email + " · Fruitly member since " + since));
@@ -77,7 +77,7 @@
 
       /* ---- profile card ---- */
       var pc = el("div", "card");
-      pc.style.cssText = "padding:30px 34px 34px;display:flex;flex-direction:column;gap:18px";
+      pc.style.cssText = "padding:var(--card-pad);display:flex;flex-direction:column;gap:18px";
       pc.appendChild(el("span", "label", "Profile"));
       pc.appendChild(input("p-name", "Your name", profile.full_name, "Asha Rao"));
       pc.appendChild(input("p-phone", "Phone", profile.phone, "+91 …"));
@@ -103,7 +103,7 @@
 
       /* ---- addresses card ---- */
       var ac = el("div", "card");
-      ac.style.cssText = "padding:30px 34px 34px;display:flex;flex-direction:column;gap:18px";
+      ac.style.cssText = "padding:var(--card-pad);display:flex;flex-direction:column;gap:18px";
       ac.appendChild(el("span", "label", "Delivery address"));
       if (!addresses.length) {
         ac.appendChild(el("p", "small muted", "No address yet — your boxes need a doorstep."));
@@ -176,7 +176,7 @@
 
       /* ---- never send card ---- */
       var nc = el("div", "card");
-      nc.style.cssText = "padding:30px 34px 34px;display:flex;flex-direction:column;gap:18px";
+      nc.style.cssText = "padding:var(--card-pad);display:flex;flex-direction:column;gap:18px";
       nc.appendChild(el("span", "label", "Never send"));
       nc.appendChild(el("p", "small muted", "Tap a fruit to keep it out of every curated box — even seasonal specials."));
       var chips = el("div");
@@ -201,24 +201,24 @@
 
       /* ---- subscription card ---- */
       var sc = el("div", "card card--dark");
-      sc.style.cssText = "padding:30px 34px 34px;display:flex;flex-direction:column;gap:18px";
+      sc.style.cssText = "padding:var(--card-pad);display:flex;flex-direction:column;gap:18px";
       var scHead = el("div");
       scHead.style.cssText = "display:flex;align-items:center;justify-content:space-between;gap:12px";
       scHead.appendChild(el("span", "label", "Subscription")).style.color = "rgba(255,255,255,0.5)";
       var st = el("span", "pill", sub ? (sub.status === "paused" ? "Paused" : "Active") : "None yet");
-      st.style.cssText = "background:rgba(255,194,51,0.18);color:var(--mango);height:26px;font-size:12px";
+      st.style.cssText = "background:rgba(255,194,51,0.18);color:var(--mango);height:26px;font-size:calc(12px * var(--ui))";
       scHead.appendChild(st);
       sc.appendChild(scHead);
       if (sub) {
-        sc.appendChild(el("span", "h3", sub.box_id ? sub.box_id.charAt(0).toUpperCase() + sub.box_id.slice(1) + " Box" : "Your custom box")).style.fontSize = "26px";
+        sc.appendChild(el("span", "h3", sub.box_id ? sub.box_id.charAt(0).toUpperCase() + sub.box_id.slice(1) + " Box" : "Your custom box")).style.fontSize = "calc(26px * var(--ui))";
         var line = el("span", null,
           { daily: "Daily", alternate: "Alternate days", weekly: "Weekly", monthly: "Monthly" }[sub.cadence] +
           " · " + API.rupees(sub.price_paise) + " per delivery · pay on delivery");
-        line.style.cssText = "color:rgba(255,255,255,0.62);font-size:15px";
+        line.style.cssText = "color:rgba(255,255,255,0.62);font-size:calc(15px * var(--ui))";
         sc.appendChild(line);
       } else {
         var none = el("span", null, "Build a box and pick a rhythm — mornings improve immediately.");
-        none.style.cssText = "color:rgba(255,255,255,0.62);font-size:15px";
+        none.style.cssText = "color:rgba(255,255,255,0.62);font-size:calc(15px * var(--ui))";
         sc.appendChild(none);
       }
       var scBtns = el("div");

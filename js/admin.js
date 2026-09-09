@@ -78,7 +78,7 @@
 
       /* pipeline */
       var pipe = el("div", "card");
-      pipe.style.cssText = "padding:26px 30px 28px;display:flex;flex-direction:column;gap:18px";
+      pipe.style.cssText = "padding:var(--card-pad);display:flex;flex-direction:column;gap:18px";
       var ph = el("div");
       ph.style.cssText = "display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap";
       ph.appendChild(el("span", "label", "Preparation → delivery · today"));
@@ -123,7 +123,7 @@
       row.style.cssText = "display:flex;align-items:flex-start;gap:18px;flex-wrap:wrap";
 
       var fr = el("div", "card");
-      fr.style.cssText = "flex:1 1 380px;padding:26px 30px 14px;min-width:0";
+      fr.style.cssText = "flex:1 1 380px;padding:var(--card-pad) var(--card-pad) 14px;min-width:0";
       var frh = el("div");
       frh.style.cssText = "padding-bottom:14px";
       frh.appendChild(el("span", "label", "Fruits required today"));
@@ -156,7 +156,7 @@
 
       /* order queue */
       var q = el("div", "card");
-      q.style.cssText = "flex:1.6 1 460px;padding:26px 30px 14px;min-width:0";
+      q.style.cssText = "flex:1.6 1 460px;padding:var(--card-pad) var(--card-pad) 14px;min-width:0";
       var qh = el("div");
       qh.style.cssText = "display:flex;align-items:center;justify-content:space-between;gap:16px;padding-bottom:14px";
       qh.appendChild(el("span", "label", "Order queue"));
@@ -187,7 +187,7 @@
         if (["placed", "preparing", "packed", "out_for_delivery"].indexOf(o.status) >= 0) {
           var adv = el("button", "btn btn--green btn--sm", "Advance");
           adv.type = "button";
-          adv.style.cssText += ";padding:0 16px;font-size:13px";
+          adv.style.cssText += ";padding:0 16px;font-size:calc(13px * var(--ui))";
           adv.addEventListener("click", async function () {
             adv.disabled = true;
             try { await API.advanceOrder(o.id); await refresh(); }

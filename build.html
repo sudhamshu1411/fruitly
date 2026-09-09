@@ -53,7 +53,7 @@
   <section class="section section--tight">
     <div class="wrap" style="display:flex;flex-direction:column;gap:12px">
       <h1 class="h1">Build your box</h1>
-      <p class="lede" style="font-size:17px">Choose fruits, set the cut, pick a rhythm. The kitchen takes it from there.</p>
+      <p class="lede lede--sm">Choose fruits, set the cut, pick a rhythm. The kitchen takes it from there.</p>
     </div>
   </section>
 
@@ -63,28 +63,28 @@
       <!-- Steps -->
       <div style="flex:1 1 560px;display:flex;flex-direction:column;gap:24px;min-width:0">
 
-        <div class="card" style="padding:30px 34px 34px;display:flex;flex-direction:column;gap:20px">
+        <div class="card" style="padding:var(--card-pad);display:flex;flex-direction:column;gap:20px">
           <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
             <span style="width:28px;height:28px;border-radius:999px;background:var(--green);color:#fff;display:inline-flex;align-items:center;justify-content:center;font:600 13px/1 var(--sans)" aria-hidden="true">1</span>
-            <h2 class="h3" style="font-size:22px">Select fruits</h2>
+            <h2 class="h3 h3--step">Select fruits</h2>
             <span class="small muted" style="margin-left:auto" id="select-count">Loading the shelf…</span>
           </div>
           <div id="fruit-chips" style="display:flex;flex-wrap:wrap;gap:10px"></div>
           <p class="small muted" style="margin:0">Today&rsquo;s shelf, live from the kitchen — prices and availability included.</p>
         </div>
 
-        <div class="card" style="padding:30px 34px 34px;display:flex;flex-direction:column;gap:20px">
+        <div class="card" style="padding:var(--card-pad);display:flex;flex-direction:column;gap:20px">
           <div style="display:flex;align-items:center;gap:12px">
             <span style="width:28px;height:28px;border-radius:999px;background:var(--green);color:#fff;display:inline-flex;align-items:center;justify-content:center;font:600 13px/1 var(--sans)" aria-hidden="true">2</span>
-            <h2 class="h3" style="font-size:22px">Quantity</h2>
+            <h2 class="h3 h3--step">Quantity</h2>
           </div>
           <div id="qty-list" style="display:flex;flex-direction:column;gap:14px"></div>
         </div>
 
-        <div class="card" style="padding:30px 34px 34px;display:flex;flex-direction:column;gap:20px">
+        <div class="card" style="padding:var(--card-pad);display:flex;flex-direction:column;gap:20px">
           <div style="display:flex;align-items:center;gap:12px">
             <span style="width:28px;height:28px;border-radius:999px;background:var(--green);color:#fff;display:inline-flex;align-items:center;justify-content:center;font:600 13px/1 var(--sans)" aria-hidden="true">3</span>
-            <h2 class="h3" style="font-size:22px">Cutting style</h2>
+            <h2 class="h3 h3--step">Cutting style</h2>
           </div>
           <div style="display:flex;gap:10px;flex-wrap:wrap">
             <button class="chip is-on" type="button" data-cut="cubed" aria-pressed="true">Cubed</button>
@@ -93,10 +93,10 @@
           </div>
         </div>
 
-        <div class="card" style="padding:30px 34px 34px;display:flex;flex-direction:column;gap:20px">
+        <div class="card" style="padding:var(--card-pad);display:flex;flex-direction:column;gap:20px">
           <div style="display:flex;align-items:center;gap:12px">
             <span style="width:28px;height:28px;border-radius:999px;background:var(--green);color:#fff;display:inline-flex;align-items:center;justify-content:center;font:600 13px/1 var(--sans)" aria-hidden="true">4</span>
-            <h2 class="h3" style="font-size:22px">Your rhythm</h2>
+            <h2 class="h3 h3--step">Your rhythm</h2>
           </div>
           <div style="display:flex;gap:10px;flex-wrap:wrap">
             <button class="chip" type="button" data-cadence="daily" aria-pressed="false">Daily</button>
@@ -109,7 +109,7 @@
       </div>
 
       <!-- Summary -->
-      <aside class="card card--lift" id="summary-card" style="flex:1 1 340px;max-width:440px;padding:32px 34px 36px;display:flex;flex-direction:column;gap:22px;position:sticky;top:96px" aria-label="Your box summary">
+      <aside class="card card--lift" id="summary-card" style="flex:1 1 340px;max-width:440px;padding:var(--card-pad);display:flex;flex-direction:column;gap:22px;position:sticky;top:96px" aria-label="Your box summary">
         <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
           <span class="label">Your box</span>
           <svg width="26" height="26" viewBox="0 0 100 100" aria-hidden="true"><path d="M58 7C75 12 87 31 87 51C87 73 68 92 45 92C25 92 10 78 10 59C10 46 18 37 29 28C39 20 44 3 58 7Z" fill="#157A3E"/></svg>
@@ -118,7 +118,7 @@
         <div style="height:1px;background:var(--hairline)"></div>
         <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px">
           <span class="small" style="color:var(--ink-60);font-weight:500" id="sum-grams">0g per delivery</span>
-          <span class="price" style="font-size:26px" id="sum-price">₹0</span>
+          <span class="price price--total" id="sum-price">₹0</span>
         </div>
         <div style="display:flex;flex-direction:column;gap:12px">
           <span style="font:600 13px/1 var(--sans);color:var(--ink-60)">Delivery days</span>
@@ -148,7 +148,7 @@
     <div class="footer__band">
       <a class="navbar__brand" href="index.html" style="color:#fff" aria-label="Fruitly home">
         <svg width="34" height="34" viewBox="0 0 100 100" aria-hidden="true"><path d="M58 7C75 12 87 31 87 51C87 73 68 92 45 92C25 92 10 78 10 59C10 46 18 37 29 28C39 20 44 3 58 7Z" fill="#FFC233"/><path d="M56 9C60 2 69 0 76 3C74 11 65 15 56 9Z" fill="#A8C64D"/></svg>
-        <span class="wordmark" style="font-size:27px">Fruitly</span>
+        <span class="wordmark wordmark--lg">Fruitly</span>
       </a>
       <nav class="footer__links" aria-label="Footer">
         <a href="shop.html">Shop</a>

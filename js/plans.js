@@ -89,7 +89,7 @@
       left.style.cssText = "flex:1.8 1 560px;display:flex;flex-direction:column;gap:24px;min-width:0";
 
       var card = el("div", "card card--dark");
-      card.style.cssText = "padding:36px 40px 40px;display:flex;flex-direction:column;gap:26px";
+      card.style.cssText = "padding:var(--card-pad);display:flex;flex-direction:column;gap:26px";
       var head = el("div");
       head.style.cssText = "display:flex;align-items:center;justify-content:space-between;gap:12px";
       head.appendChild(el("span", "label", "Your Fruitly")).style.color = "rgba(255,255,255,0.5)";
@@ -135,7 +135,7 @@
         sub.status === "paused"
           ? API.dateLabel(sub.paused_until) + " — deliveries resume after"
           : nextLive ? API.dateLabel(nextLive) + " · before 8am" : "—"
-      )).style.cssText += "font:600 18px/1.2 var(--sans)";
+      )).style.cssText += "font:600 calc(18px * var(--ui))/1.2 var(--sans)";
       band.appendChild(bl);
 
       var bBtns = el("div");
@@ -164,7 +164,7 @@
 
       /* upcoming list */
       var up = el("div", "card");
-      up.style.cssText = "padding:8px 34px";
+      up.style.cssText = "padding:8px var(--card-pad)";
       var upLbl = el("p", "label", "Upcoming deliveries");
       upLbl.style.cssText = "padding:24px 0 4px;margin:0";
       up.appendChild(upLbl);
@@ -205,7 +205,7 @@
 
       /* days + cutting editor */
       var prefs = el("div", "card");
-      prefs.style.cssText = "padding:28px 32px 32px;display:flex;flex-direction:column;gap:18px";
+      prefs.style.cssText = "padding:var(--card-pad);display:flex;flex-direction:column;gap:18px";
       prefs.appendChild(el("span", "label", "Delivery days"));
       var editDays = sub.delivery_days.slice();
       var editCut = sub.cutting;
@@ -252,10 +252,10 @@
 
       /* pause / cancel */
       var away = el("div", "card card--sand");
-      away.style.cssText = "padding:28px 32px 32px;display:flex;flex-direction:column;gap:14px";
+      away.style.cssText = "padding:var(--card-pad);display:flex;flex-direction:column;gap:14px";
       away.appendChild(el("span", "label", "Going away?"));
       var note = el("p", null, "Pause for up to 30 days. Your plan, days and prices wait for you.");
-      note.style.cssText = "margin:0;font-size:15px;color:var(--ink-75)";
+      note.style.cssText = "margin:0;font-size:calc(15px * var(--ui));color:var(--ink-75)";
       away.appendChild(note);
       if (sub.status === "active") {
         var pauseRow = el("div");

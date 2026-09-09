@@ -126,7 +126,7 @@
         row.style.cssText = "display:flex;align-items:center;flex-wrap:wrap;gap:12px 16px;padding:14px 18px;border-radius:20px;background:var(--paper)";
         row.innerHTML =
           '<span style="width:12px;height:12px;border-radius:999px;background:' + f.color + ';flex:none"></span>' +
-          '<span style="font:500 16px/1 var(--sans)"></span>' +
+          '<span style="font:500 calc(16px * var(--ui))/1 var(--sans)"></span>' +
           '<span class="muted small">' + f.grams_per_cup + "g per cup · " + API.rupees(f.price_paise) + "</span>" +
           '<span class="stepper" style="margin-left:auto">' +
           '<button type="button" class="stepper__btn stepper__btn--minus" aria-label="One less cup">−</button>' +
@@ -211,8 +211,8 @@
       card.innerHTML =
         '<div style="display:flex;flex-direction:column;gap:18px;align-items:flex-start">' +
         '<span class="pill pill--fresh">Confirmed</span>' +
-        '<h2 class="h3" style="font-size:24px"></h2>' +
-        '<div class="muted" style="display:flex;flex-direction:column;gap:8px;font-size:15px" id="confirm-lines"></div>' +
+        '<h2 class="h3" style="font-size:calc(24px * var(--ui))"></h2>' +
+        '<div class="muted" style="display:flex;flex-direction:column;gap:8px;font-size:calc(15px * var(--ui))" id="confirm-lines"></div>' +
         '<a class="btn btn--green" href="' + cta.href + '">' + cta.label + "</a></div>";
       card.querySelector("h2").textContent = title;
       var wrap = card.querySelector("#confirm-lines");

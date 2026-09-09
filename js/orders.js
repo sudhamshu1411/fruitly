@@ -85,7 +85,7 @@
       var past = orders.filter(function (o) { return o !== live; });
       if (past.length) {
         var listCard = el("div", "card");
-        listCard.style.cssText = "padding:8px 40px;margin-top:" + (live ? "24px" : "0");
+        listCard.style.cssText = "padding:8px var(--card-pad);margin-top:" + (live ? "24px" : "0");
         var lbl = el("p", "label", live ? "Previous deliveries" : "Your deliveries");
         lbl.style.cssText = "padding:26px 0 6px;margin:0";
         listCard.appendChild(lbl);
@@ -98,7 +98,7 @@
 
     function trackingCard(o) {
       var card = el("div", "card");
-      card.style.cssText = "padding:36px 40px;display:flex;gap:40px;flex-wrap:wrap";
+      card.style.cssText = "padding:var(--card-pad);display:flex;gap:40px;flex-wrap:wrap";
 
       var leftCol = el("div");
       leftCol.style.cssText = "flex:1 1 340px;display:flex;flex-direction:column;gap:24px;min-width:0";
@@ -110,7 +110,7 @@
       leftCol.appendChild(meta);
 
       var h = el("h2", "h2", STEPS[RANK[o.status]].label + (o.status === "placed" ? " · cut from 5am" : ""));
-      h.style.cssText = "font-variation-settings:'wdth' 114;font-size:clamp(24px,2.4vw,32px)";
+      h.style.cssText = "font-variation-settings:'wdth' 114;font-size:calc(clamp(24px,2.4vw,32px) * var(--ui))";
       leftCol.appendChild(h);
 
       var tl = el("div", "timeline");
