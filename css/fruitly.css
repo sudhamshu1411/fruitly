@@ -80,6 +80,12 @@
 
 /* ---------- reset ---------- */
 *, *::before, *::after { box-sizing: border-box; }
+
+/* The hidden attribute only carries `display: none` from the UA sheet, so any
+   author rule that sets display — a .field class, an inline style="display:flex"
+   — silently outranks it and el.hidden = true does nothing. Every toggle in this
+   codebase uses .hidden, so make it win. */
+[hidden] { display: none !important; }
 html { scroll-behavior: smooth; }
 body {
   margin: 0;

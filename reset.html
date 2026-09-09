@@ -3,9 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Sign in — Fruitly</title>
-<meta name="description" content="Sign in to Fruitly or create your account.">
-<meta name="robots" content="noindex">
+<title>Set a new password — Fruitly</title>
+<meta name="description" content="Choose a new password for your Fruitly account.">
+<meta name="robots" content="noindex,nofollow">
 <meta name="theme-color" content="#FBF8F3">
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -15,7 +15,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js" defer></script>
 <script src="js/config.js" defer></script>
 <script src="js/api.js" defer></script>
-<script src="js/auth.js" defer></script>
+<script src="js/reset.js" defer></script>
 <style>
   .field { display: flex; flex-direction: column; gap: 8px; }
   .field input {
@@ -24,7 +24,6 @@
     background: #fff; font: 400 16px/1 var(--sans);
   }
   .field input:focus { outline: 2px solid var(--green); outline-offset: 1px; }
-  .authtabs { display: flex; gap: 10px; }
   .autherr { color: #B3330E; font: 500 14px/1.4 var(--sans); min-height: 20px; margin: 0; }
   .authnote { color: var(--green); font: 500 14px/1.4 var(--sans); margin: 0; }
   .authnote:empty { display: none; }
@@ -40,38 +39,29 @@
     </a>
 
     <div class="card" style="padding:var(--card-pad);display:flex;flex-direction:column;gap:22px">
-      <div class="authtabs" role="tablist" aria-label="Sign in or create account">
-        <button class="chip is-on" type="button" role="tab" aria-selected="true" id="tab-signin">Sign in</button>
-        <button class="chip" type="button" role="tab" aria-selected="false" id="tab-signup">Create account</button>
-      </div>
+      <h1 class="h3" id="reset-title">Set a new password</h1>
 
-      <form id="auth-form" style="display:flex;flex-direction:column;gap:16px" novalidate>
-        <div class="field" id="name-field" hidden>
-          <label class="small muted" for="f-name">Your name</label>
-          <input id="f-name" type="text" autocomplete="name" maxlength="80" placeholder="Asha Rao">
+      <p class="small muted" id="reset-status" style="margin:0">Checking your link…</p>
+
+      <form id="reset-form" style="display:flex;flex-direction:column;gap:16px" novalidate hidden>
+        <div class="field">
+          <label class="small muted" for="f-new">New password</label>
+          <input id="f-new" type="password" autocomplete="new-password" required minlength="8" placeholder="8+ characters">
         </div>
         <div class="field">
-          <label class="small muted" for="f-email">Email</label>
-          <input id="f-email" type="email" autocomplete="email" required placeholder="you@example.com">
+          <label class="small muted" for="f-confirm">Confirm it</label>
+          <input id="f-confirm" type="password" autocomplete="new-password" required minlength="8" placeholder="Type it again">
         </div>
-        <div class="field">
-          <label class="small muted" for="f-password">Password</label>
-          <input id="f-password" type="password" autocomplete="current-password" required minlength="8" placeholder="8+ characters">
-        </div>
-        <p class="autherr" id="auth-error" role="alert"></p>
-        <p class="authnote" id="auth-note" role="status"></p>
-        <button class="btn btn--green btn--block" type="submit" id="auth-submit">Sign in</button>
+        <p class="autherr" id="reset-error" role="alert"></p>
+        <button class="btn btn--green btn--block" type="submit" id="reset-submit">Save new password</button>
       </form>
 
-      <button class="textbtn" type="button" id="forgot" style="align-self:center">Forgot your password?</button>
-
-      <p class="small muted" style="margin:0;text-align:center">Your morning fruit, one login away.</p>
+      <a class="btn btn--outline btn--block" href="auth.html" id="reset-back" hidden>Back to sign in</a>
     </div>
 
     <a href="index.html" style="text-align:center;font:600 14px/1 var(--sans)">← Back to Fruitly</a>
   </div>
 </main>
-
 
 </body>
 </html>

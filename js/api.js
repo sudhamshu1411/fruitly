@@ -62,6 +62,22 @@
     signOut: async function () {
       await sb.auth.signOut();
     },
+    /* Sends the recovery mail. Supabase answers the same way whether or not the
+       address is registered, so this never confirms who has an account. */
+    requestPasswordReset: async function (email) {
+      var base = location.origin + location.pathname.replace(/[^/]*$/, "");
+      return unwrap(await sb.auth.resetPasswordForEmail(email, {
+        redirectTo: base + "reset.html"
+      }));
+    },
+    /* Only works while a session exists — either the recovery link's temporary
+       session, or an ordinary signed-in one changing their password. */
+    updatePassword: async function (password) {
+      return unwrap(await sb.auth.updateUser({ password: password }));
+    },
+    onAuthEvent: function (fn) {
+      return sb.auth.onAuthStateChange(fn);
+    },
 
     /* ---------- catalogue (public) ---------- */
     fruits: async function () {

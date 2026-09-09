@@ -49,6 +49,24 @@ value becomes money.
 Run `supabase` advisors after any migration; `0004_hardening.sql` pins
 `search_path` on helpers and keeps `is_staff()` away from `anon`.
 
+### Password recovery
+
+`auth.html` offers "Forgot your password?", which calls
+`resetPasswordForEmail` and mails a link to `reset.html`. That page turns the
+recovery token into a session, takes the new password and calls `updateUser`.
+It answers identically whether or not the address is registered, so it cannot
+be used to discover who has an account.
+
+**It needs two things configured to actually deliver mail:**
+
+1. **SMTP** — Project Settings → Authentication → SMTP Settings. Without it,
+   Supabase's shared sender is rate-limited to a handful an hour and may only
+   reach project members, which is fine for you and useless for customers.
+2. **Redirect allowlist** — Authentication → URL Configuration → add
+   `https://<your-domain>/reset.html` under Redirect URLs, and set Site URL to
+   the deployed origin. Supabase refuses to redirect anywhere unlisted, so the
+   link silently fails without this.
+
 ### Two knobs worth setting before launch
 
 - **`ALLOWED_ORIGINS`** on the `signup` function — a comma-separated origin

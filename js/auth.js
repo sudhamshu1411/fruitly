@@ -5,6 +5,8 @@ document.addEventListener("DOMContentLoaded", function () {
   var submit = document.getElementById("auth-submit");
   var err = document.getElementById("auth-error");
   var pw = document.getElementById("f-password");
+  var note = document.getElementById("auth-note");
+  var forgot = document.getElementById("forgot");
 
   function setMode(m) {
     mode = m;
@@ -16,13 +18,40 @@ document.addEventListener("DOMContentLoaded", function () {
     submit.textContent = m === "signup" ? "Create account" : "Sign in";
     pw.autocomplete = m === "signup" ? "new-password" : "current-password";
     err.textContent = "";
+    note.textContent = "";
+    forgot.hidden = m !== "signin";
   }
   tabs.signin.addEventListener("click", function () { setMode("signin"); });
   tabs.signup.addEventListener("click", function () { setMode("signup"); });
 
+  forgot.addEventListener("click", async function () {
+    var email = document.getElementById("f-email").value.trim();
+    err.textContent = "";
+    note.textContent = "";
+    if (!email) {
+      err.textContent = "Enter your email above first, then tap this again.";
+      document.getElementById("f-email").focus();
+      return;
+    }
+    forgot.disabled = true;
+    var was = forgot.textContent;
+    forgot.textContent = "Sending…";
+    try {
+      await FruitlyAPI.requestPasswordReset(email);
+    } catch (ex) {
+      // Deliberately not surfaced: a failure here would otherwise reveal
+      // whether the address is registered.
+    }
+    // Same wording either way, so this never confirms who has an account.
+    note.textContent = "If that email has a Fruitly account, a reset link is on its way.";
+    forgot.disabled = false;
+    forgot.textContent = was;
+  });
+
   document.getElementById("auth-form").addEventListener("submit", async function (e) {
     e.preventDefault();
     err.textContent = "";
+    note.textContent = "";
     var email = document.getElementById("f-email").value.trim();
     var password = pw.value;
     var name = document.getElementById("f-name").value.trim();
