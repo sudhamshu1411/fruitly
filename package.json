@@ -1,0 +1,9 @@
+{
+  "name": "fruitly",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Fruitly — a freshness subscription platform. Static front end on Supabase.",
+  "scripts": {
+    "build": "bash ./build.sh"
+  }
+}
