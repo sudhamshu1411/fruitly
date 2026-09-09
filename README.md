@@ -41,9 +41,27 @@ value becomes money.
 | Injection | Everything goes through parameterised RPCs; inputs are regex/range/enum-checked in SQL and by table `CHECK` constraints. |
 | Secrets | Only the anon key ships to the browser (it is public by design and gated by RLS). The service-role key exists solely inside the `signup` edge function. |
 | Business rules | Skips close at midnight IST; pauses capped at 30 days; ratings only on **delivered** orders you own; one live plan per user (partial unique index). |
+| Table wipes | `TRUNCATE` is not governed by RLS, so it is revoked from `anon`/`authenticated` on every table (`0006`). |
+| Signup abuse | `signup` calls `admin.createUser`, which bypasses Supabase Auth's own rate limits — so it throttles itself: 5 attempts an hour and 20 a day per IP, keyed on a SHA-256 so no raw address is stored (`0007`). |
+| XSS | Every value from the database or a user is written with `textContent` / DOM properties. No user- or catalogue-supplied string is ever concatenated into `innerHTML`. |
 
 Run `supabase` advisors after any migration; `0004_hardening.sql` pins
 `search_path` on helpers and keeps `is_staff()` away from `anon`.
+
+### Two knobs worth setting before launch
+
+- **`ALLOWED_ORIGINS`** on the `signup` function — a comma-separated origin
+  list. Unset means any origin, which is the historical behaviour. CORS only
+  binds browsers, so this is hardening on top of the throttle, not a substitute
+  for it.
+- **Leaked-password protection** — Authentication → Passwords in the Supabase
+  dashboard. It is the one advisor warning that cannot be fixed from a
+  migration.
+
+`signup` creates accounts with `email_confirm: true` because the project has no
+SMTP configured. That is a deliberate trade — it also means an address is never
+proven to belong to the person signing up. Configure SMTP and move to the normal
+confirmation flow before treating an email address as verified.
 
 ## Database
 

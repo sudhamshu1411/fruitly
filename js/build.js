@@ -125,15 +125,21 @@
         var row = document.createElement("div");
         row.style.cssText = "display:flex;align-items:center;flex-wrap:wrap;gap:12px 16px;padding:14px 18px;border-radius:20px;background:var(--paper)";
         row.innerHTML =
-          '<span style="width:12px;height:12px;border-radius:999px;background:' + f.color + ';flex:none"></span>' +
+          '<span style="width:12px;height:12px;border-radius:999px;flex:none"></span>' +
           '<span style="font:500 calc(16px * var(--ui))/1 var(--sans)"></span>' +
-          '<span class="muted small">' + f.grams_per_cup + "g per cup · " + API.rupees(f.price_paise) + "</span>" +
+          '<span class="muted small"></span>' +
           '<span class="stepper" style="margin-left:auto">' +
           '<button type="button" class="stepper__btn stepper__btn--minus" aria-label="One less cup">−</button>' +
-          '<span class="stepper__count">' + box[id] + (box[id] === 1 ? " cup" : " cups") + "</span>" +
+          '<span class="stepper__count"></span>' +
           '<button type="button" class="stepper__btn stepper__btn--plus" aria-label="One more cup">+</button>' +
           "</span>";
+        // Catalogue values are set as properties, never interpolated into the
+        // markup above, so a stray character in a field can never become HTML.
+        row.children[0].style.background = f.color;
         row.children[1].textContent = f.name;
+        row.children[2].textContent = f.grams_per_cup + "g per cup · " + API.rupees(f.price_paise);
+        row.querySelector(".stepper__count").textContent =
+          box[id] + (box[id] === 1 ? " cup" : " cups");
         row.querySelector(".stepper__btn--minus").addEventListener("click", function () {
           box[id]--;
           if (box[id] <= 0) delete box[id];
