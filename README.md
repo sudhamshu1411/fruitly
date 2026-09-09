@@ -107,8 +107,34 @@ supabase functions deploy signup
 
 ## Deploy
 
-Static files — **Vercel** (`npx vercel`), **Netlify** (publish dir `/`), or
-**GitHub Pages** (Settings → Pages → `main` / root). No build step.
+### Vercel (recommended)
+
+Import this repository at [vercel.com/new](https://vercel.com/new). Everything
+it needs is committed, so accept the defaults — Framework Preset **Other**, and
+leave Build Command, Output Directory and Install Command untouched:
+
+- `package.json` exposes `build`, which runs `build.sh`
+- `build.sh` assembles the deployable tree into `public/`, deliberately leaving
+  out `supabase/` so the SQL migrations are never served from the CDN
+- `vercel.json` turns on clean URLs and sets the response headers (HSTS, CSP,
+  `nosniff`, referrer and permissions policies, and per-type `Cache-Control`)
+
+Every push to `main` then redeploys on its own.
+
+`build.sh` also works when it is deployed on its own, without the rest of the
+repository: with no `index.html` beside it, it fetches `main` from this
+repository instead. That is only a bootstrap for deploying without a git link —
+a real Vercel project should be linked to the repo so pushes deploy themselves.
+
+### Anywhere else
+
+**Netlify** (build `npm run build`, publish `public`) or **GitHub Pages**
+(Settings → Pages → `main` / root — serve the repo as-is; it needs no build,
+though `supabase/` will then be publicly readable).
+
+The CSP in `vercel.json` names the four hosts the site talks to — jsDelivr for
+`supabase-js`, Google Fonts, and the Supabase project. Update `connect-src`
+when you point `js/config.js` at a different Supabase project.
 
 ## What's next
 
