@@ -28,6 +28,14 @@
     session: async function () {
       return (await sb.auth.getSession()).data.session || null;
     },
+    /* The signed-in user's id. Every "my data" query below filters on this
+       explicitly. RLS is the security boundary, but staff policies read
+       "own row OR is_staff()", so a staff session would otherwise match every
+       customer's rows — silently on a list, and fatally on maybeSingle(). */
+    uid: async function () {
+      var s = await API.session();
+      return s ? s.user.id : null;
+    },
     requireSession: async function (nextPage) {
       var s = await API.session();
       if (!s) {
@@ -65,7 +73,8 @@
 
     /* ---------- profile & account ---------- */
     profile: async function () {
-      return unwrap(await sb.from("profiles").select("*").maybeSingle());
+      return unwrap(await sb.from("profiles").select("*")
+        .eq("id", await API.uid()).maybeSingle());
     },
     saveProfile: async function (fields) {
       var uid = (await API.session()).user.id;
@@ -76,7 +85,8 @@
       }).eq("id", uid).select().single());
     },
     addresses: async function () {
-      return unwrap(await sb.from("addresses").select("*").order("created_at"));
+      return unwrap(await sb.from("addresses").select("*")
+        .eq("user_id", await API.uid()).order("created_at"));
     },
     addAddress: async function (a) {
       var uid = (await API.session()).user.id;
@@ -92,7 +102,8 @@
       return unwrap(await sb.from("addresses").update({ is_default: true }).eq("id", id).select());
     },
     exclusions: async function () {
-      return unwrap(await sb.from("exclusions").select("fruit_id"));
+      return unwrap(await sb.from("exclusions").select("fruit_id")
+        .eq("user_id", await API.uid()));
     },
     setExclusions: async function (fruitIds) {
       return unwrap(await sb.rpc("set_exclusions", { p_fruit_ids: fruitIds }));
@@ -102,6 +113,7 @@
     mySubscription: async function () {
       return unwrap(await sb.from("subscriptions")
         .select("*, subscription_items(fruit_id, cups)")
+        .eq("user_id", await API.uid())
         .in("status", ["active", "paused"]).maybeSingle());
     },
     mySkips: async function (subId) {
@@ -147,6 +159,7 @@
     myOrders: async function (limit) {
       return unwrap(await sb.from("orders")
         .select("*, order_items(fruit_id, cups, price_paise_per_cup), ratings(stars)")
+        .eq("user_id", await API.uid())
         .order("delivery_date", { ascending: false }).limit(limit || 30));
     },
     rateOrder: async function (orderId, stars, comment) {
