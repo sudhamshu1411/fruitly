@@ -9,7 +9,21 @@
 
   var sb = window.supabase.createClient(
     window.FRUITLY_CONFIG.url,
-    window.FRUITLY_CONFIG.anonKey
+    window.FRUITLY_CONFIG.anonKey,
+    {
+      auth: {
+        /* Set explicitly rather than relying on the library default. PKCE
+           returns a single-use code in the query string, exchanged against a
+           verifier this browser generated and never sent — so a code captured
+           from a URL, a referrer header or shoulder-surfed history is useless
+           to anyone else. The implicit alternative puts the access and refresh
+           tokens straight in the URL fragment. */
+        flowType: "pkce",
+        detectSessionInUrl: true,   // the callback page depends on this
+        autoRefreshToken: true,
+        persistSession: true
+      }
+    }
   );
 
   function unwrap(res) {
@@ -45,16 +59,64 @@
       }
       return s;
     },
-    signUp: async function (email, password, fullName) {
-      var res = await sb.functions.invoke("signup", {
-        body: { email: email, password: password, full_name: fullName }
+    /* Where Supabase sends people back to after they click a link in an email
+       or finish with Google. Same page handles both. */
+    callbackUrl: function (next) {
+      var base = location.origin + location.pathname.replace(/[^/]*$/, "");
+      var safe = /^[a-z0-9-]+\.html$/.test(next || "") ? next : "account.html";
+      return base + "auth-callback.html?next=" + encodeURIComponent(safe);
+    },
+
+    /* Standard signUp, not the admin API. This is what makes confirmation real:
+       the account exists but cannot sign in until the emailed link is clicked,
+       so a spam signup is an inert row rather than a usable account.
+
+       Supabase deliberately returns success for an address that already exists
+       (with an identities array of length 0) so this cannot be used to discover
+       who has an account — so the caller must not treat "no error" as "new
+       account created". */
+    signUp: async function (email, password, fullName, next) {
+      var res = await sb.auth.signUp({
+        email: email,
+        password: password,
+        options: {
+          data: { full_name: fullName || "" },
+          emailRedirectTo: API.callbackUrl(next)
+        }
       });
-      if (res.error) {
-        var detail = null;
-        try { detail = await res.error.context.json(); } catch (e) { /* no body */ }
-        throw new Error((detail && detail.error) || "could not create the account");
-      }
-      return API.signIn(email, password);
+      if (res.error) throw new Error(res.error.message);
+      var user = res.data && res.data.user;
+      return {
+        // A session only comes back when confirmation is switched off.
+        needsConfirmation: !(res.data && res.data.session),
+        // Empty identities means the address was already registered.
+        alreadyRegistered: !!(user && user.identities && user.identities.length === 0)
+      };
+    },
+
+    resendConfirmation: async function (email, next) {
+      return unwrap(await sb.auth.resend({
+        type: "signup",
+        email: email,
+        options: { emailRedirectTo: API.callbackUrl(next) }
+      }));
+    },
+
+    /* PKCE is the default for OAuth in supabase-js v2, so no client secret ever
+       touches the browser and the code cannot be replayed from a stolen URL.
+       prompt=select_account stops Google silently reusing whichever account
+       happens to be signed in, which is the usual cause of "it logged me into
+       the wrong account". */
+    signInWithGoogle: async function (next) {
+      var res = await sb.auth.signInWithOAuth({
+        provider: "google",
+        options: {
+          redirectTo: API.callbackUrl(next),
+          queryParams: { prompt: "select_account" }
+        }
+      });
+      if (res.error) throw new Error(res.error.message);
+      return res.data;
     },
     signIn: async function (email, password) {
       return unwrap(await sb.auth.signInWithPassword({ email: email, password: password }));

@@ -28,22 +28,68 @@
   .autherr { color: #B3330E; font: 500 14px/1.4 var(--sans); min-height: 20px; margin: 0; }
   .authnote { color: var(--green); font: 500 14px/1.4 var(--sans); margin: 0; }
   .authnote:empty { display: none; }
+
+  /* Google's brand guidelines require their mark on a neutral surface with
+     their own colours — not tinted to our palette. This is the one element on
+     the site that deliberately does not follow the brand system. */
+  .gbtn {
+    display: flex; align-items: center; justify-content: center; gap: 12px;
+    width: 100%; min-height: 52px;
+    border-radius: var(--r-input); cursor: pointer;
+    border: 1px solid rgba(19, 42, 29, 0.16); background: #fff;
+    font: 500 15px/1 var(--sans); color: #1f1f1f;
+    transition: background 160ms cubic-bezier(0.2, 0, 0, 1), border-color 160ms;
+  }
+  .gbtn:hover { background: #F7F5F1; border-color: rgba(19, 42, 29, 0.28); }
+  .gbtn:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; }
+  .gbtn[disabled] { opacity: 0.6; cursor: default; }
+
+  /* A rule with the word set into it, rather than a stacked divider + label */
+  .orline {
+    display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 14px;
+    color: var(--ink-60); font: 500 12.5px/1 var(--sans);
+    letter-spacing: 0.08em; text-transform: uppercase;
+  }
+  .orline::before, .orline::after { content: ""; height: 1px; background: var(--hairline); }
+
+  .sent__mark {
+    width: 56px; height: 56px; border-radius: 999px; flex: none;
+    display: inline-flex; align-items: center; justify-content: center;
+    background: rgba(21, 122, 62, 0.12);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .sent { animation: sent-in 420ms cubic-bezier(0.16, 1, 0.3, 1) both; }
+    @keyframes sent-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+  }
 </style>
 </head>
 <body>
 
-<main style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px">
+<main style="min-height:100dvh;display:flex;align-items:center;justify-content:center;padding:24px">
   <div style="width:min(440px,100%);display:flex;flex-direction:column;gap:28px">
     <a href="index.html" style="display:flex;align-items:center;gap:12px;justify-content:center;color:var(--ink)">
       <svg width="40" height="40" viewBox="0 0 100 100" aria-hidden="true"><path d="M58 7C75 12 87 31 87 51C87 73 68 92 45 92C25 92 10 78 10 59C10 46 18 37 29 28C39 20 44 3 58 7Z" fill="#157A3E"/><path d="M58 7C75 12 87 31 87 51C87 73 68 92 45 92C25 92 10 78 10 59C10 46 18 37 29 28C39 20 44 3 58 7Z" fill="#FFC233" transform="translate(23 15) scale(0.585)"/><path d="M56 9C60 2 69 0 76 3C74 11 65 15 56 9Z" fill="#A8C64D"/></svg>
       <span class="wordmark wordmark--xl">Fruitly</span>
     </a>
 
-    <div class="card" style="padding:var(--card-pad);display:flex;flex-direction:column;gap:22px">
+    <!-- ---------- the form ---------- -->
+    <div class="card" id="auth-card" style="padding:var(--card-pad);display:flex;flex-direction:column;gap:22px">
       <div class="authtabs" role="tablist" aria-label="Sign in or create account">
         <button class="chip is-on" type="button" role="tab" aria-selected="true" id="tab-signin">Sign in</button>
         <button class="chip" type="button" role="tab" aria-selected="false" id="tab-signup">Create account</button>
       </div>
+
+      <button class="gbtn" type="button" id="google-btn">
+        <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true">
+          <path fill="#4285F4" d="M17.64 9.2c0-.64-.06-1.25-.16-1.84H9v3.48h4.84a4.14 4.14 0 0 1-1.8 2.72v2.26h2.92c1.7-1.57 2.68-3.88 2.68-6.62z"/>
+          <path fill="#34A853" d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.92-2.26c-.81.54-1.84.86-3.04.86-2.34 0-4.32-1.58-5.03-3.7H.96v2.33A9 9 0 0 0 9 18z"/>
+          <path fill="#FBBC05" d="M3.97 10.72a5.4 5.4 0 0 1 0-3.44V4.95H.96a9 9 0 0 0 0 8.1l3.01-2.33z"/>
+          <path fill="#EA4335" d="M9 3.58c1.32 0 2.5.45 3.44 1.35l2.58-2.58C13.46.9 11.43 0 9 0A9 9 0 0 0 .96 4.95l3.01 2.33C4.68 5.16 6.66 3.58 9 3.58z"/>
+        </svg>
+        <span id="google-label">Continue with Google</span>
+      </button>
+
+      <div class="orline"><span>or</span></div>
 
       <form id="auth-form" style="display:flex;flex-direction:column;gap:16px" novalidate>
         <div class="field" id="name-field" hidden>
@@ -63,15 +109,41 @@
         <button class="btn btn--green btn--block" type="submit" id="auth-submit">Sign in</button>
       </form>
 
-      <button class="textbtn" type="button" id="forgot" style="align-self:center">Forgot your password?</button>
+      <div style="display:flex;flex-direction:column;gap:10px;align-items:center">
+        <button class="textbtn" type="button" id="forgot">Forgot your password?</button>
+        <button class="textbtn" type="button" id="resend" hidden>Resend the confirmation email</button>
+      </div>
 
       <p class="small muted" style="margin:0;text-align:center">Your morning fruit, one login away.</p>
+    </div>
+
+    <!-- ---------- after signing up ---------- -->
+    <div class="card sent" id="sent-card" hidden style="padding:var(--card-pad);display:flex;flex-direction:column;gap:20px">
+      <span class="sent__mark" aria-hidden="true">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#157A3E" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3.5 6.5h17v11h-17z"/><path d="m3.5 7 8.5 6 8.5-6"/>
+        </svg>
+      </span>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <h1 class="h3">Check your inbox</h1>
+        <p class="muted" style="margin:0;font-size:calc(15px * var(--ui))">
+          We&rsquo;ve sent a confirmation link to <b id="sent-email" style="color:var(--ink)"></b>.
+          Open it and your Fruitly account is live.
+        </p>
+        <p class="small muted" style="margin:0">
+          It usually lands within a minute. Worth checking spam before assuming it didn&rsquo;t.
+        </p>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <button class="btn btn--outline btn--block" type="button" id="sent-resend">Send it again</button>
+        <p class="authnote" id="sent-note" role="status" style="text-align:center"></p>
+        <button class="textbtn" type="button" id="sent-back" style="align-self:center">Use a different email</button>
+      </div>
     </div>
 
     <a href="index.html" style="text-align:center;font:600 14px/1 var(--sans)">← Back to Fruitly</a>
   </div>
 </main>
-
 
 </body>
 </html>

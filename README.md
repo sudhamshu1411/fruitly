@@ -43,6 +43,9 @@ value becomes money.
 | Business rules | Skips close at midnight IST; pauses capped at 30 days; ratings only on **delivered** orders you own; one live plan per user (partial unique index). |
 | Table wipes | `TRUNCATE` is not governed by RLS, so it is revoked from `anon`/`authenticated` on every table (`0006`). |
 | Signup abuse | `signup` calls `admin.createUser`, which bypasses Supabase Auth's own rate limits — so it throttles itself: 5 attempts an hour and 20 a day per IP, keyed on a SHA-256 so no raw address is stored (`0007`). |
+| OAuth flow | `flowType: 'pkce'` is set explicitly rather than left to the library default — a one-time code in the query string, exchanged against a verifier that never leaves the browser, instead of access and refresh tokens sitting in the URL fragment. |
+| Open redirect | `?next=` is matched against `^[a-z0-9-]+\.html$` in both `auth.js` and `auth-callback.js`. A scheme, a `//host`, or a path is discarded and replaced with `account.html`. |
+| Account enumeration | Duplicate signup, password reset and resend all answer identically whether or not the address is registered. Supabase obfuscates the duplicate-signup response; the UI does not undo that by saying "already registered". |
 | XSS | Every value from the database or a user is written with `textContent` / DOM properties. No user- or catalogue-supplied string is ever concatenated into `innerHTML`. |
 | Order spam | `place_one_time_order` caps a user at 10 one-time orders per rolling 24h (`0008`). Subscriptions were already bounded by the one-active-plan index; one-time orders had no ceiling, so a signed-in account could loop the RPC and mint unlimited kitchen tickets. Cron-generated subscription deliveries do not count against the cap. |
 
@@ -53,6 +56,51 @@ value becomes money.
 
 Run `supabase` advisors after any migration; `0004_hardening.sql` pins
 `search_path` on helpers and keeps `is_staff()` away from `anon`.
+
+### Sign-in, confirmation and Google
+
+Three ways in, one account per address:
+
+- **Email + password** via `auth.signUp()` / `signInWithPassword()`.
+- **Email confirmation** — the account exists but cannot sign in until the
+  emailed link is opened, so a spam signup is an inert row.
+- **Continue with Google** via `signInWithOAuth()`, PKCE flow.
+
+`auth-callback.html` catches both the confirmation link and the Google return,
+waits for supabase-js to exchange the code for a session, then forwards to
+`?next=` — validated against `^[a-z0-9-]+\.html$` so it can only ever be a page
+on this site. Expired links and a declined Google consent screen each get their
+own explanation rather than a spinner that never resolves.
+
+**Email confirmation is not optional if Google is enabled.** Supabase links
+identities that share an email address, and only drops *unconfirmed* ones when
+it does. With confirmation off, someone could register `you@gmail.com` with a
+password of their choosing, wait for you to "Continue with Google", and keep a
+working password on your account — a pre-account-takeover. Confirmation is what
+closes that.
+
+**Required setup — none of it is code:**
+
+1. **SMTP** — Project Settings → Authentication → SMTP. Without it Supabase's
+   shared sender is rate-limited to a handful an hour and may only reach project
+   members, so confirmation mail will not arrive for real customers.
+2. **Google provider** — Authentication → Sign In / Providers → Google. Needs a
+   Client ID and Secret from Google Cloud Console, with
+   `https://vmoymtsfsfurmceycmep.supabase.co/auth/v1/callback` as the authorised
+   redirect URI **on Google's side**.
+3. **Redirect allowlist** — Authentication → URL Configuration. Site URL set to
+   the deployed origin, and `https://<your-domain>/auth-callback.html` plus
+   `https://<your-domain>/reset.html` under Redirect URLs. Supabase refuses to
+   redirect anywhere unlisted, so both flows fail silently without this.
+4. **"Allow new users to sign up" must be ON.** This reverses earlier advice in
+   this file's history: it was correct to disable it while signup ran through a
+   throttled edge function, because the built-in endpoint was then a bypass. It
+   is now the signup path, protected by Supabase's own rate limits and by
+   confirmation.
+
+The old `signup` edge function is retired — it created pre-confirmed accounts
+through the admin API, which would now be a confirmation bypass. Its slug still
+answers, with 410.
 
 ### Password recovery
 
@@ -71,6 +119,24 @@ be used to discover who has an account.
    `https://<your-domain>/reset.html` under Redirect URLs, and set Site URL to
    the deployed origin. Supabase refuses to redirect anywhere unlisted, so the
    link silently fails without this.
+
+### Known gap: the supabase-js script is not pinned
+
+Every page loads `@supabase/supabase-js@2` from jsDelivr — a floating major
+version, with no Subresource Integrity hash. That script handles the auth
+session, so a bad build served from the CDN would run with full access to it.
+The fix is to pin an exact version and add an SRI hash:
+
+```bash
+V=2.58.0   # check the real latest first
+curl -s https://cdn.jsdelivr.net/npm/@supabase/supabase-js@$V/dist/umd/supabase.min.js \
+  | openssl dgst -sha384 -binary | openssl base64 -A
+```
+
+Then in every page: `<script src="...@$V/..." integrity="sha384-<hash>" crossorigin="anonymous" defer>`.
+Not done here because this environment's egress policy blocks the CDN, so the
+version and hash could not be verified — and a wrong SRI hash blocks the script
+and takes the whole site down.
 
 ### Two knobs worth setting before launch
 
