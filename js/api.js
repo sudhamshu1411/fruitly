@@ -194,6 +194,54 @@
         .order("delivery_date", { ascending: true })
         .order("created_at", { ascending: true }).limit(60));
     },
+    /* ---------- staff: catalogue, inventory, finance ----------
+       Cost prices and the stock ledger live behind these calls, never in the
+       public catalogue query. Every one is staff-gated server-side; the UI
+       hiding a button is a convenience, not the control. */
+    adminCatalog: async function () {
+      return unwrap(await sb.rpc("admin_catalog"));
+    },
+    adminFinance: async function (fromDate, toDate) {
+      return unwrap(await sb.rpc("admin_finance_summary", { p_from: fromDate, p_to: toDate }));
+    },
+    adjustStock: async function (fruitId, delta, reason, note) {
+      return unwrap(await sb.rpc("adjust_stock", {
+        p_fruit_id: fruitId, p_delta: delta, p_reason: reason, p_note: note || null
+      }));
+    },
+    setFruitOps: async function (fruitId, costPaise, reorderThreshold) {
+      return unwrap(await sb.rpc("set_fruit_ops", {
+        p_fruit_id: fruitId, p_cost_price_paise: costPaise, p_reorder_threshold: reorderThreshold
+      }));
+    },
+    stockLedger: async function (fruitId, limit) {
+      return unwrap(await sb.from("inventory_movements")
+        .select("*").eq("fruit_id", fruitId)
+        .order("created_at", { ascending: false }).limit(limit || 20));
+    },
+    openIssues: async function () {
+      return unwrap(await sb.from("fulfillment_issues")
+        .select("*").is("resolved_at", null)
+        .order("issue_date", { ascending: false }).limit(50));
+    },
+    resolveIssue: async function (id) {
+      return unwrap(await sb.rpc("resolve_fulfillment_issue", { p_id: id }));
+    },
+    categories: async function () {
+      return unwrap(await sb.from("categories").select("*").order("sort"));
+    },
+    saveCategory: async function (c) {
+      return unwrap(await sb.from("categories")
+        .upsert({ id: c.id, name: c.name, sort: c.sort || 100, is_active: c.is_active !== false })
+        .select().single());
+    },
+    deleteCategory: async function (id) {
+      return unwrap(await sb.from("categories").delete().eq("id", id));
+    },
+    setFruitCategory: async function (fruitId, categoryId) {
+      return unwrap(await sb.from("fruits").update({ category_id: categoryId || null }).eq("id", fruitId).select());
+    },
+
     advanceOrder: async function (orderId) {
       return unwrap(await sb.rpc("advance_order", { p_order: orderId }));
     },

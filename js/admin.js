@@ -36,7 +36,312 @@
     }
 
     document.getElementById("admin-user").textContent = profile.full_name || "Ops";
+
+    var catalogRoot = document.getElementById("catalog-root");
+    var financeRoot = document.getElementById("finance-root");
+    var alerts = document.getElementById("admin-alerts");
+    var title = document.getElementById("admin-title");
+    var panels = { today: root, catalog: catalogRoot, finance: financeRoot };
+    var titles = { today: "Today\u2019s operations", catalog: "Catalogue & stock", finance: "Finance" };
+    var loaded = { today: false, catalog: false, finance: false };
+
+    function currentTab() {
+      var h = (location.hash || "#today").replace("#", "");
+      return panels[h] ? h : "today";
+    }
+
+    async function showTab(name) {
+      Object.keys(panels).forEach(function (k) {
+        panels[k].hidden = k !== name;
+      });
+      document.querySelectorAll("[data-tab]").forEach(function (a) {
+        var on = a.getAttribute("data-tab") === name;
+        if (on) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current");
+      });
+      title.textContent = titles[name];
+      if (name === "catalog" && !loaded.catalog) { loaded.catalog = true; await renderCatalog(); }
+      if (name === "finance" && !loaded.finance) { loaded.finance = true; await renderFinance(); }
+    }
+
+    window.addEventListener("hashchange", function () { showTab(currentTab()); });
+
     await refresh();
+    await renderAlerts();
+    await showTab(currentTab());
+
+    /* ---------- alerts: low stock and unfulfilled boxes, always visible ---------- */
+    async function renderAlerts() {
+      alerts.innerHTML = "";
+      var cat;
+      try { cat = await API.adminCatalog(); } catch (e) { return; }
+      if (!cat) return;   // an RPC can answer null; never let that break the header
+      if (cat.low_stock_count > 0) {
+        var a = el("a", "pill pill--warn", cat.low_stock_count + " low on stock");
+        a.href = "admin.html#catalog";
+        alerts.appendChild(a);
+      }
+      if (cat.open_fulfillment_issues > 0) {
+        var b = el("a", "pill pill--warn", cat.open_fulfillment_issues + " unfulfilled");
+        b.href = "admin.html#finance";
+        alerts.appendChild(b);
+      }
+    }
+
+    /* ---------- catalogue & stock ---------- */
+    async function renderCatalog() {
+      catalogRoot.innerHTML = "";
+      var data;
+      try {
+        data = await API.adminCatalog();
+      } catch (e) {
+        catalogRoot.appendChild(el("p", "lede", "Couldn\u2019t load the catalogue \u2014 " + e.message));
+        return;
+      }
+      if (!data || !data.fruits) {
+        catalogRoot.appendChild(el("p", "lede", "The catalogue came back empty."));
+        return;
+      }
+
+      var catNames = {};
+      data.categories.forEach(function (c) { catNames[c.id] = c.name; });
+
+      /* stock table */
+      var card = el("div", "card");
+      card.style.cssText = "padding:var(--card-pad);min-width:0";
+      var head = el("div");
+      head.style.cssText = "display:flex;align-items:center;justify-content:space-between;gap:16px;padding-bottom:14px;flex-wrap:wrap";
+      head.appendChild(el("span", "label", "Stock, cost and margin"));
+      head.appendChild(el("span", "small muted", "Cost and margin are staff-only \u2014 they never reach the storefront."));
+      card.appendChild(head);
+
+      var wrap = el("div");
+      wrap.style.overflowX = "auto";
+      var tbl = el("table", "table");
+      tbl.innerHTML = "<thead><tr><th>Fruit</th><th>Category</th><th class='num'>Sells for</th>" +
+        "<th class='num'>Costs</th><th class='num'>Margin</th><th class='num'>In stock</th><th class='num'>Reorder at</th><th>Adjust</th></tr></thead>";
+      var tb = el("tbody");
+
+      data.fruits.forEach(function (f) {
+        var tr = el("tr");
+        if (f.low_stock) tr.style.background = "rgba(242,107,29,0.07)";
+
+        tr.appendChild(el("td", null, f.name)).style.fontWeight = "500";
+
+        var tdCat = el("td");
+        var sel = el("select");
+        sel.style.cssText = "height:34px;border-radius:10px;border:1px solid var(--hairline);background:#fff;padding:0 8px;font:400 13px/1 var(--sans)";
+        var none = el("option", null, "\u2014"); none.value = "";
+        sel.appendChild(none);
+        data.categories.forEach(function (c) {
+          var o = el("option", null, c.name);
+          o.value = c.id;
+          if (c.id === f.category_id) o.selected = true;
+          sel.appendChild(o);
+        });
+        sel.addEventListener("change", async function () {
+          try { await API.setFruitCategory(f.id, sel.value); if (F) F.toast(f.name + " \u2192 " + (catNames[sel.value] || "no category")); }
+          catch (e) { if (F) F.toast(e.message); }
+        });
+        tdCat.appendChild(sel);
+        tr.appendChild(tdCat);
+
+        tr.appendChild(el("td", "num", API.rupees(f.price_paise)));
+        tr.appendChild(el("td", "num muted", f.cost_price_paise == null ? "\u2014" : API.rupees(f.cost_price_paise)));
+
+        var margin = f.cost_price_paise == null ? null : f.price_paise - f.cost_price_paise;
+        var pct = margin == null ? null : Math.round((margin / f.price_paise) * 100);
+        var tdM = el("td", "num", margin == null ? "\u2014" : API.rupees(margin) + " \u00b7 " + pct + "%");
+        if (margin != null) tdM.style.color = pct >= 40 ? "var(--green)" : "var(--orange-deep)";
+        tdM.style.fontWeight = "500";
+        tr.appendChild(tdM);
+
+        var tdS = el("td", "num", String(f.stock_qty));
+        tdS.style.fontWeight = "600";
+        if (f.low_stock) tdS.style.color = "var(--orange-deep)";
+        tr.appendChild(tdS);
+
+        tr.appendChild(el("td", "num muted", String(f.reorder_threshold)));
+
+        var tdA = el("td");
+        tdA.style.cssText = "white-space:nowrap";
+        [["+10", 10], ["+50", 50], ["\u221210", -10]].forEach(function (pair) {
+          var b = el("button", "textbtn", pair[0]);
+          b.type = "button";
+          b.style.marginRight = "10px";
+          b.addEventListener("click", async function () {
+            b.disabled = true;
+            try {
+              await API.adjustStock(f.id, pair[1], pair[1] > 0 ? "restock" : "wastage");
+              await renderCatalog();
+              await renderAlerts();
+            } catch (e) { if (F) F.toast(e.message); b.disabled = false; }
+          });
+          tdA.appendChild(b);
+        });
+        tr.appendChild(tdA);
+        tb.appendChild(tr);
+      });
+      tbl.appendChild(tb);
+      wrap.appendChild(tbl);
+      card.appendChild(wrap);
+      catalogRoot.appendChild(card);
+
+      /* categories */
+      var cc = el("div", "card");
+      cc.style.cssText = "padding:var(--card-pad);min-width:0";
+      cc.appendChild(el("span", "label", "Categories"));
+      var list = el("div");
+      list.style.cssText = "display:flex;flex-wrap:wrap;gap:10px;padding:14px 0";
+      data.categories.forEach(function (c) {
+        var chip = el("span", "pill pill--neutral", c.name);
+        var x = el("button", "textbtn textbtn--danger", "\u00d7");
+        x.type = "button";
+        x.style.marginLeft = "8px";
+        x.addEventListener("click", async function () {
+          try { await API.deleteCategory(c.id); await renderCatalog(); }
+          catch (e) { if (F) F.toast(e.message); }
+        });
+        chip.appendChild(x);
+        list.appendChild(chip);
+      });
+      cc.appendChild(list);
+
+      var form = el("div");
+      form.style.cssText = "display:flex;gap:10px;flex-wrap:wrap;align-items:center";
+      var nameIn = el("input");
+      nameIn.placeholder = "New category name";
+      nameIn.style.cssText = "height:40px;border-radius:12px;border:1px solid var(--hairline);padding:0 14px;font:400 14px/1 var(--sans);flex:1 1 200px";
+      var addBtn = el("button", "btn btn--green btn--sm", "Add category");
+      addBtn.type = "button";
+      addBtn.addEventListener("click", async function () {
+        var nm = nameIn.value.trim();
+        if (nm.length < 2) { if (F) F.toast("Give it a name first."); return; }
+        var slug = nm.toLowerCase().replace(/[^a-z]+/g, "_").replace(/^_+|_+$/g, "").slice(0, 30);
+        if (slug.length < 2) { if (F) F.toast("Letters only, please."); return; }
+        addBtn.disabled = true;
+        try {
+          await API.saveCategory({ id: slug, name: nm, sort: 100 });
+          nameIn.value = "";
+          await renderCatalog();
+        } catch (e) { if (F) F.toast(e.message); }
+        addBtn.disabled = false;
+      });
+      form.append(nameIn, addBtn);
+      cc.appendChild(form);
+      catalogRoot.appendChild(cc);
+    }
+
+    /* ---------- finance ---------- */
+    async function renderFinance() {
+      financeRoot.innerHTML = "";
+      var to = new Date();
+      var from = new Date(to.getTime() - 29 * 86400000);
+      var iso = function (d) { return d.toISOString().slice(0, 10); };
+
+      var data;
+      try {
+        data = await API.adminFinance(iso(from), iso(to));
+      } catch (e) {
+        financeRoot.appendChild(el("p", "lede", "Couldn\u2019t load finance \u2014 " + e.message));
+        return;
+      }
+      if (!data || !data.payments) {
+        financeRoot.appendChild(el("p", "lede", "No finance data for this window."));
+        return;
+      }
+
+      var margin = data.revenue_paise - data.cogs_paise;
+      var pct = data.revenue_paise > 0 ? Math.round((margin / data.revenue_paise) * 100) : 0;
+
+      var kpis = el("div", "grid grid-4");
+      kpis.style.gap = "18px";
+      kpis.appendChild(tile("Revenue \u00b7 30 days", API.rupees(data.revenue_paise), data.orders_count + " orders"));
+      kpis.appendChild(tile("Cost of goods", API.rupees(data.cogs_paise),
+        data.cogs_coverage.items_with_cost + " of " + data.cogs_coverage.items_total + " items have a cost set"));
+      kpis.appendChild(tile("Gross margin", API.rupees(margin), pct + "% of revenue"));
+      kpis.appendChild(tile("Cash to collect", API.rupees(data.payments.cod_pending_paise), "COD not yet paid"));
+      financeRoot.appendChild(kpis);
+
+      /* daily revenue */
+      var card = el("div", "card");
+      card.style.cssText = "padding:var(--card-pad)";
+      card.appendChild(el("span", "label", "Revenue by day"));
+      if (!data.by_day.length) {
+        card.appendChild(el("p", "small muted", "No delivered orders in this window yet.")).style.margin = "14px 0 0";
+      } else {
+        var max = data.by_day.reduce(function (m, d) { return Math.max(m, d.revenue_paise); }, 0) || 1;
+        var chart = el("div");
+        chart.style.cssText = "display:flex;align-items:flex-end;gap:4px;height:140px;padding-top:18px";
+        data.by_day.forEach(function (d) {
+          var bar = el("div");
+          bar.style.cssText = "flex:1 1 0;min-width:4px;border-radius:6px 6px 0 0;background:var(--green);height:" +
+            Math.max(4, Math.round((d.revenue_paise / max) * 120)) + "px";
+          bar.title = d.date + " \u00b7 " + API.rupees(d.revenue_paise) + " \u00b7 " + d.orders + " orders";
+          chart.appendChild(bar);
+        });
+        card.appendChild(chart);
+        var axis = el("div");
+        axis.style.cssText = "display:flex;justify-content:space-between;padding-top:8px";
+        axis.appendChild(el("span", "small muted", data.by_day[0].date));
+        axis.appendChild(el("span", "small muted", data.by_day[data.by_day.length - 1].date));
+        card.appendChild(axis);
+      }
+      financeRoot.appendChild(card);
+
+      /* payments */
+      var pay = el("div", "card");
+      pay.style.cssText = "padding:var(--card-pad);display:flex;flex-direction:column;gap:12px";
+      pay.appendChild(el("span", "label", "Payments"));
+      [["Collected on delivery", data.payments.cod_paid_paise],
+       ["Still to collect", data.payments.cod_pending_paise],
+       ["Paid online", data.payments.online_paise]].forEach(function (r) {
+        var line = el("div");
+        line.style.cssText = "display:flex;justify-content:space-between;gap:16px";
+        line.appendChild(el("span", "muted", r[0]));
+        line.appendChild(el("span", null, API.rupees(r[1]))).style.fontWeight = "600";
+        pay.appendChild(line);
+      });
+      financeRoot.appendChild(pay);
+
+      /* unfulfilled */
+      var issues = [];
+      try { issues = await API.openIssues(); } catch (e) { issues = []; }
+      var ic = el("div", "card");
+      ic.style.cssText = "padding:var(--card-pad)";
+      ic.appendChild(el("span", "label", "Boxes that could not be made"));
+      if (!issues.length) {
+        ic.appendChild(el("p", "small muted", "Nothing outstanding \u2014 every subscription was fulfilled.")).style.margin = "14px 0 0";
+      } else {
+        var il = el("div", "rowlist");
+        issues.forEach(function (i) {
+          var r = el("div", "row");
+          r.style.padding = "12px 0";
+          var m = el("div", "row__main");
+          m.appendChild(el("span", null, API.dateLabel(i.issue_date) + " \u00b7 " + i.reason)).style.fontWeight = "600";
+          var detail = "";
+          if (i.detail && i.detail.length) {
+            detail = i.detail.map(function (d) {
+              return d.fruit_id + " (needed " + d.needed + ", had " + d.have + ")";
+            }).join(", ");
+          } else if (i.detail && i.detail.error) {
+            detail = i.detail.error;
+          }
+          m.appendChild(el("span", "small muted", detail));
+          r.appendChild(m);
+          var done = el("button", "textbtn", "Mark handled");
+          done.type = "button";
+          done.addEventListener("click", async function () {
+            done.disabled = true;
+            try { await API.resolveIssue(i.id); await renderFinance(); await renderAlerts(); }
+            catch (e) { if (F) F.toast(e.message); done.disabled = false; }
+          });
+          r.appendChild(done);
+          il.appendChild(r);
+        });
+        ic.appendChild(il);
+      }
+      financeRoot.appendChild(ic);
+    }
 
     function el(tag, cls, text) {
       var n = document.createElement(tag);

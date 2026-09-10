@@ -30,9 +30,17 @@
     </a>
 
     <nav class="admin__nav" aria-label="Admin">
-      <a href="admin.html" aria-current="page">
+      <a href="admin.html#today" data-tab="today" aria-current="page">
         <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7v5.2l3.2 2"/></svg>
         Today
+      </a>
+      <a href="admin.html#catalog" data-tab="catalog">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h10"/></svg>
+        Catalogue &amp; stock
+      </a>
+      <a href="admin.html#finance" data-tab="finance">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19V5M4 19h16M8 15V9M12 15v-4M16 15V7"/></svg>
+        Finance
       </a>
       <a href="index.html"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10.5 12 4l8 6.5V19a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 19z"/></svg>Storefront</a>
     </nav>
@@ -52,14 +60,18 @@
   <main class="admin__main">
     <div style="display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap">
       <div style="display:flex;flex-direction:column;gap:8px">
-        <h1 class="h2">Today&rsquo;s operations</h1>
+        <h1 class="h2" id="admin-title">Today&rsquo;s operations</h1>
         <span class="small muted" id="admin-date">Loading…</span>
       </div>
+      <div id="admin-alerts" style="display:flex;gap:10px;flex-wrap:wrap"></div>
     </div>
 
     <div id="admin-root" style="display:flex;flex-direction:column;gap:24px">
       <p class="lede">Fetching the board…</p>
     </div>
+
+    <div id="catalog-root" hidden style="display:flex;flex-direction:column;gap:24px"></div>
+    <div id="finance-root" hidden style="display:flex;flex-direction:column;gap:24px"></div>
   </main>
 </div>
 

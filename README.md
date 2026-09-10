@@ -46,6 +46,11 @@ value becomes money.
 | XSS | Every value from the database or a user is written with `textContent` / DOM properties. No user- or catalogue-supplied string is ever concatenated into `innerHTML`. |
 | Order spam | `place_one_time_order` caps a user at 10 one-time orders per rolling 24h (`0008`). Subscriptions were already bounded by the one-active-plan index; one-time orders had no ceiling, so a signed-in account could loop the RPC and mint unlimited kitchen tickets. Cron-generated subscription deliveries do not count against the cap. |
 
+| Cost & margin | `fruit_ops` is a separate, staff-only table precisely so the public catalogue query (`fruits`, `using (true)` for anon) can never return it. Cost never reaches a browser. |
+| Stock integrity | `stock_qty` is deliberately absent from the column-level UPDATE grant on `fruits`, so **not even staff** can set it directly — it moves only through `adjust_stock()`, which writes a matching `inventory_movements` row in the same transaction. The ledger cannot drift from the number. |
+| Overselling | `place_one_time_order` locks each fruit row (in `fruit_id` order, to avoid deadlocking against a concurrent order) and refuses the whole order if any item is short. Nothing is written on failure. |
+| Nightly-run blast radius | A stock-out in one subscription logs a `fulfillment_issues` row and returns null instead of raising; `generate_orders` additionally wraps each subscription in its own exception boundary. One customer's missing ingredient can no longer roll back everybody else's order for the day. |
+
 Run `supabase` advisors after any migration; `0004_hardening.sql` pins
 `search_path` on helpers and keeps `is_staff()` away from `anon`.
 
@@ -81,6 +86,27 @@ be used to discover who has an account.
 SMTP configured. That is a deliberate trade — it also means an address is never
 proven to belong to the person signing up. Configure SMTP and move to the normal
 confirmation flow before treating an email address as verified.
+
+## Admin portal (Phase 1)
+
+Three tabs at `/admin.html`, all staff-gated:
+
+- **Today** — the order pipeline, cut list and queue (unchanged).
+- **Catalogue & stock** — stock levels with low-stock highlighting, one-tap
+  restock/wastage, per-fruit cost and computed margin, and category management.
+- **Finance** — revenue, COGS, gross margin and cash still to collect over 30
+  days, a daily revenue chart, payment split, and the list of boxes the
+  nightly run could not make.
+
+Two caveats worth knowing:
+
+- **COGS is computed at query time** from the *current* cost price, not the
+  cost frozen at order time. Fine while ingredient costs move slowly; if they
+  start moving fast, snapshot `cost_price_paise` onto `order_items` and sum
+  that instead.
+- The seeded cost prices are a **placeholder 55% of sell price**. Replace them
+  with real supplier costs on the Catalogue tab or the margin numbers are
+  fiction.
 
 ## Database
 
