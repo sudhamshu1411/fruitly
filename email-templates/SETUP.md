@@ -1,4 +1,7 @@
-# Email and auth setup for fruitly.fit
+# Go-live runbook — fruitly.fit
+
+Do these in order. Steps 1–3 are the ones that break things silently if
+skipped; everything after is verification.
 
 Everything here is configuration, not code. The code is already deployed and
 waiting for it.
@@ -131,3 +134,78 @@ drops *unconfirmed* ones when it does. With confirmation off, someone could
 register `you@gmail.com` with a password of their choosing, wait for you to
 "Continue with Google", and keep a working password on your account — a
 pre-account-takeover. Confirmation is what closes it.
+
+
+---
+
+## 6. Vercel — the domain itself
+
+**Vercel → Project → Settings → Domains**
+
+Add **both** `fruitly.fit` and `www.fruitly.fit`, set `fruitly.fit` as primary.
+
+At your DNS host:
+```
+Type: A      Name: @     Value: 76.76.21.21
+Type: CNAME  Name: www   Value: cname.vercel-dns.com
+```
+(Vercel shows the exact values for your project — use those if they differ.)
+
+`vercel.json` also redirects `www` → apex at the edge, so the origin is the
+same no matter which one someone types. That is not cosmetic: **a session
+created on `www` is a different origin from one on the apex**, and if Supabase's
+Site URL is the apex while a customer signed in on `www`, OAuth returns them to
+an origin that has no session. Pick one, force it, and use the same one
+everywhere below.
+
+---
+
+## 7. Verify it actually works
+
+Once 1–6 are done, walk these in a private window:
+
+| Check | Expect |
+|---|---|
+| `https://www.fruitly.fit` | redirects to `https://fruitly.fit` |
+| Sign up with a real address | confirmation mail arrives, branded, from `support@fruitly.fit` |
+| Click the link | lands on `/auth-callback.html`, then your account |
+| Click the same link twice | "That link has expired", with a way back |
+| Sign in before confirming | "still needs confirming" + a resend button |
+| Continue with Google | Google account chooser, then back into the account |
+| Forgot password | reset mail arrives, link sets a new password |
+| `curl -sI https://fruitly.fit \| grep -i strict-transport` | HSTS header present |
+
+Header check in one go:
+```bash
+curl -sI https://fruitly.fit | grep -iE 'strict-transport|content-security|x-content-type|referrer-policy|x-frame'
+```
+
+Mail authentication check — send yourself a confirmation, then in Gmail use
+*Show original* and confirm all three say **PASS**:
+```
+SPF: PASS    DKIM: PASS    DMARC: PASS
+```
+
+---
+
+## Two things left in the code, deliberately
+
+**supabase-js is not version-pinned.** Every page loads
+`@supabase/supabase-js@2` from jsDelivr — a floating major version with no
+Subresource Integrity hash, on pages that handle the auth session. Pin it:
+```bash
+V=2.58.0   # check the real latest
+curl -s https://cdn.jsdelivr.net/npm/@supabase/supabase-js@$V/dist/umd/supabase.min.js \
+  | openssl dgst -sha384 -binary | openssl base64 -A
+```
+then in every page use `...@$V/...` with `integrity="sha384-<hash>" crossorigin="anonymous"`.
+Not done here because this environment's egress blocks the CDN, so the version
+and hash could not be verified — and a wrong SRI hash blocks the script and
+takes the whole site down.
+
+**Google Fonts is a render-blocking third-party request.** `preconnect` and
+`display=swap` already soften it, and the site is only ~67KB of its own bytes,
+but self-hosting the four font files under `/assets/fonts/` and serving them
+from your own origin removes a DNS+TLS+fetch round trip before first paint —
+and stops every visitor's browser contacting Google. Same reason it is not done
+here: the font CDN is blocked from this environment.
