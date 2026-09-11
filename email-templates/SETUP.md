@@ -31,14 +31,72 @@ mail will not reach customers.
 ```
 Sender email:  support@fruitly.fit
 Sender name:   Fruitly
-Host:          <your mail provider's SMTP host>
+Host:          <see "Which host?" below>
 Port:          587        (STARTTLS — prefer this over 465/implicit TLS)
-Username:      support@fruitly.fit
-Password:      <an app password / SMTP token, never the mailbox password>
+Username:      <see below — not always the address>
+Password:      <an app password / API key, never the mailbox password>
 ```
 
-Use a dedicated SMTP credential that can be revoked on its own. If the provider
-offers a send-only API key, use that rather than the mailbox login.
+### Which host?
+
+The host is issued by **whoever runs the `fruitly.fit` mailboxes** — not by the
+domain, and not by Supabase. One command names them:
+
+```bash
+dig MX fruitly.fit +short          # macOS / Linux
+nslookup -type=mx fruitly.fit      # Windows
+```
+
+| MX looks like | Provider | SMTP host | Username |
+|---|---|---|---|
+| `mx.zoho.in` / `mx.zoho.com` | Zoho Mail | `smtp.zoho.in` **or** `smtp.zoho.com` | full address |
+| `aspmx.l.google.com` | Google Workspace | `smtp.gmail.com` | full address |
+| `*.mail.protection.outlook.com` | Microsoft 365 | `smtp.office365.com` | full address |
+| `mx1.hostinger.com` | Hostinger | `smtp.hostinger.com` | full address |
+| `mx1.privateemail.com` | Namecheap | `mail.privateemail.com` | full address |
+| `*.secureserver.net` | GoDaddy | `smtpout.secureserver.net` | full address |
+
+Three traps:
+
+- **Zoho's data centre matters.** `smtp.zoho.in` and `smtp.zoho.com` are
+  different servers; the wrong one fails auth with an unhelpful error. If your
+  webmail URL is `mail.zoho.in`, use `.in`.
+- **Google and Zoho need an app password**, not the mailbox password, and the
+  option only appears once 2FA is on.
+- **Microsoft 365 is the one to avoid.** Microsoft has been permanently
+  disabling basic-auth SMTP submission. If your MX is Outlook, don't plan on
+  `smtp.office365.com` working here.
+
+### Better: don't use the mailbox at all
+
+Point Supabase at a transactional sender authenticated on `fruitly.fit`, and
+keep the four mailboxes for humans. This is not tidiness — the mailbox route
+walks into three concrete failures:
+
+1. **Quota.** Zoho free is ~200/day account-wide, Gmail ~500. Signups, resends
+   and password resets share that with real correspondence. On a launch day the
+   ceiling is reached and confirmation mail stops — silently, for customers.
+2. **Blast radius.** The SMTP password *is* the mailbox credential. Supabase
+   stores it; if it leaks, someone can read and send as `support@`. An API key
+   does one thing and revokes in a click.
+3. **Reputation.** A human support inbox and a robot sending hundreds of
+   identical templated messages build different sender reputations. Mixed, one
+   bad run costs you the ability to answer customers.
+
+| Service | Host | Username | Password | Free tier |
+|---|---|---|---|---|
+| **Resend** | `smtp.resend.com` | `resend` | API key | 3,000/mo, 100/day |
+| **Brevo** | `smtp-relay.brevo.com` | login shown under SMTP & API | SMTP key | 300/day |
+| **Amazon SES** (`ap-south-1`) | `email-smtp.ap-south-1.amazonaws.com` | IAM SMTP user | IAM SMTP password | cheapest at volume, starts sandboxed |
+
+Resend is the right pick for this stage: the DKIM records it issues are exactly
+what step 3 below is asking for.
+
+**Mandatory either way:** verify the `fruitly.fit` domain inside the service
+*before* pointing Supabase at it. Until it is verified, `From:
+support@fruitly.fit` is rejected outright — no provider lets you send as a
+domain you haven't proven you own. Verification is also what generates the DKIM
+records, so it feeds step 3 directly.
 
 ---
 
@@ -144,12 +202,17 @@ pre-account-takeover. Confirmation is what closes it.
 
 Add **both** `fruitly.fit` and `www.fruitly.fit`, set `fruitly.fit` as primary.
 
-At your DNS host:
+At your DNS host, use **the exact values Vercel prints on that Domains
+screen**. Do not copy them from a blog post: Vercel moved off the old
+`76.76.21.21` apex address, so a stale A record points at nothing.
+
+**This part already appears to be done.** As of the last check:
 ```
-Type: A      Name: @     Value: 76.76.21.21
-Type: CNAME  Name: www   Value: cname.vercel-dns.com
+fruitly.fit       A      216.198.79.1
+www.fruitly.fit   CNAME  …vercel-dns-017.com   (64.29.17.65)
 ```
-(Vercel shows the exact values for your project — use those if they differ.)
+Both resolve to Vercel, so unless the dashboard flags an error, leave them
+alone.
 
 `vercel.json` also redirects `www` → apex at the edge, so the origin is the
 same no matter which one someone types. That is not cosmetic: **a session
