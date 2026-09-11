@@ -27,6 +27,7 @@ mkdir -p public
     --exclude='./.git' \
     --exclude='./.github' \
     --exclude='./supabase' \
+    --exclude='./email-templates' \
     --exclude='./public' \
     --exclude='./node_modules' \
     --exclude='./build.sh' \

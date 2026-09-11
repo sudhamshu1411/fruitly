@@ -1,3 +1,11 @@
 User-agent: *
 Allow: /
 Disallow: /admin.html
+Disallow: /auth.html
+Disallow: /auth-callback.html
+Disallow: /reset.html
+Disallow: /account.html
+Disallow: /orders.html
+Disallow: /plans.html
+
+Sitemap: https://fruitly.fit/sitemap.xml

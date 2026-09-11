@@ -18,11 +18,24 @@ document.addEventListener("DOMContentLoaded", function () {
     return /^[a-z0-9-]+\.html$/.test(next) ? next : "account.html";
   }
 
-  function fail(headline, detail) {
+  function fail(headline, detail, offerHelp) {
     spinner.hidden = true;
     title.textContent = headline;
     message.textContent = detail;
     actions.hidden = false;
+    // Someone who cannot get in has no other route to us, so give them one.
+    if (offerHelp) {
+      var help = document.createElement("p");
+      help.className = "small muted";
+      help.style.margin = "0";
+      help.appendChild(document.createTextNode("Still stuck? Email "));
+      var a = document.createElement("a");
+      a.href = "mailto:support@fruitly.fit";
+      a.textContent = "support@fruitly.fit";
+      help.appendChild(a);
+      help.appendChild(document.createTextNode(" and we'll sort it out."));
+      actions.appendChild(help);
+    }
   }
 
   /* Supabase reports failures in the query string (PKCE) or the fragment
@@ -41,7 +54,7 @@ document.addEventListener("DOMContentLoaded", function () {
     } else if (/access_denied/i.test(errName)) {
       fail("Sign-in cancelled", "You didn’t finish at Google, so nothing has changed. You can try again whenever.");
     } else {
-      fail("That didn’t work", errText || "The link is no longer valid. Try signing in again.");
+      fail("That didn’t work", errText || "The link is no longer valid. Try signing in again.", true);
     }
     return;
   }
@@ -69,6 +82,6 @@ document.addEventListener("DOMContentLoaded", function () {
     if (settled) return;
     settled = true;
     fail("We couldn’t finish signing you in",
-      "The link may have already been used. Open the most recent email, or sign in with your password.");
+      "The link may have already been used. Open the most recent email, or sign in with your password.", true);
   })();
 });

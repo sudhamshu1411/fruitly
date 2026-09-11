@@ -79,6 +79,11 @@ password of their choosing, wait for you to "Continue with Google", and keep a
 working password on your account — a pre-account-takeover. Confirmation is what
 closes that.
 
+**Auth mail sends from `support@fruitly.fit`** — a monitored mailbox, not a
+no-reply, because a confused customer will reply to it. Branded HTML templates
+for the confirmation and reset emails live in `email-templates/`, and
+`email-templates/SETUP.md` carries the full SMTP, DNS and provider setup.
+
 **Required setup — none of it is code:**
 
 1. **SMTP** — Project Settings → Authentication → SMTP. Without it Supabase's
@@ -119,6 +124,20 @@ be used to discover who has an account.
    `https://<your-domain>/reset.html` under Redirect URLs, and set Site URL to
    the deployed origin. Supabase refuses to redirect anywhere unlisted, so the
    link silently fails without this.
+
+### Mailboxes
+
+| Mailbox | Purpose |
+|---|---|
+| `order@fruitly.fit` | Deliveries and order queries |
+| `support@fruitly.fit` | Accounts, sign-in, password trouble — also the auth mail sender and every lock-out screen |
+| `contact@fruitly.fit` | General enquiries |
+| `business@fruitly.fit` | Stockists and partnerships |
+
+All four are in the footer of every public page, labelled by purpose rather
+than listed as addresses. `support@` additionally appears wherever someone can
+get locked out — a dead confirmation link, a failed callback, an expired reset —
+because at that point they have no other route to a human.
 
 ### Known gap: the supabase-js script is not pinned
 

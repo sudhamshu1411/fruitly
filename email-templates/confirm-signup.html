@@ -1,0 +1,168 @@
+<!-- Fruitly · Confirm signup
+     Paste into Supabase → Authentication → Email Templates → "Confirm signup".
+
+     Email is not the web. No flexbox, no grid, no web fonts, no external CSS —
+     Outlook renders with Word's engine and strips most of it. So: tables for
+     layout, critical styles inline, a 600px shell, and a bulletproof (VML)
+     button so the call to action survives Outlook too.
+
+     Supabase substitutes {{ .ConfirmationURL }} at send time. -->
+<!doctype html>
+<html lang="en" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="x-apple-disable-message-reformatting">
+<meta name="color-scheme" content="light dark">
+<meta name="supported-color-schemes" content="light dark">
+<title>Confirm your Fruitly account</title>
+<!--[if mso]>
+<noscript><xml><o:OfficeDocumentSettings><o:PixelsPerInch>96</o:PixelsPerInch></o:OfficeDocumentSettings></xml></noscript>
+<![endif]-->
+<style>
+  /* Clients that support media queries get these; the rest fall back to the
+     inline styles, which are complete on their own. */
+  @media only screen and (max-width: 620px) {
+    .shell { width: 100% !important; }
+    .pad { padding-left: 24px !important; padding-right: 24px !important; }
+    .display { font-size: 28px !important; line-height: 34px !important; }
+  }
+  @media (prefers-color-scheme: dark) {
+    .bg { background-color: #101711 !important; }
+    .card { background-color: #17211a !important; }
+    .ink { color: #F3F1EC !important; }
+    .muted-ink { color: #A9B3AB !important; }
+    .hair { border-color: #2A382E !important; }
+  }
+  a { text-decoration: none; }
+</style>
+</head>
+<body class="bg" style="margin:0;padding:0;background-color:#FBF8F3;">
+
+<!-- Inbox preview line. Hidden in the body, shown in the list view — without
+     it clients scrape the first visible text, which is the wordmark. -->
+<div style="display:none;font-size:1px;color:#FBF8F3;line-height:1px;max-height:0;max-width:0;opacity:0;overflow:hidden;">
+  One tap and your Fruitly account is live. The link is good for an hour.
+  &#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;
+</div>
+
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="bg" style="background-color:#FBF8F3;">
+  <tr>
+    <td align="center" style="padding:40px 12px;">
+
+      <table role="presentation" class="shell" width="600" cellpadding="0" cellspacing="0" border="0" style="width:600px;max-width:600px;">
+
+        <!-- wordmark -->
+        <tr>
+          <td class="pad" style="padding:0 40px 26px;">
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+              <tr>
+                <td style="padding-right:10px;vertical-align:middle;line-height:0;">
+                  <img src="https://fruitly.fit/assets/mark-64.png" width="32" height="32" alt=""
+                       style="display:block;width:32px;height:32px;border:0;">
+                </td>
+                <td class="ink" style="vertical-align:middle;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:22px;font-weight:700;letter-spacing:-0.4px;color:#132A1D;">
+                  Fruitly
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+        <!-- card -->
+        <tr>
+          <td class="card" style="background-color:#FFFFFF;border-radius:24px;">
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+              <tr>
+                <td class="pad" style="padding:44px 40px 0;">
+                  <h1 class="display ink" style="margin:0 0 14px;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:32px;line-height:38px;font-weight:800;letter-spacing:-0.8px;color:#132A1D;">
+                    One tap and you&rsquo;re in
+                  </h1>
+                  <p class="muted-ink" style="margin:0 0 28px;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:16px;line-height:25px;color:#4A5A50;">
+                    Confirm this address and your Fruitly account goes live. Then you can
+                    build a box, pick your rhythm, and let the mornings take care of themselves.
+                  </p>
+                </td>
+              </tr>
+
+              <!-- bulletproof button -->
+              <tr>
+                <td class="pad" style="padding:0 40px 28px;">
+                  <!--[if mso]>
+                  <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word"
+                    href="{{ .ConfirmationURL }}" style="height:52px;v-text-anchor:middle;width:260px;" arcsize="46%" stroke="f" fillcolor="#157A3E">
+                    <w:anchorlock/>
+                    <center style="color:#ffffff;font-family:Arial,sans-serif;font-size:16px;font-weight:bold;">Confirm my account</center>
+                  </v:roundrect>
+                  <![endif]-->
+                  <!--[if !mso]><!-- -->
+                  <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+                    <tr>
+                      <td align="center" bgcolor="#157A3E" style="border-radius:26px;">
+                        <a href="{{ .ConfirmationURL }}"
+                           style="display:inline-block;padding:16px 34px;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:16px;font-weight:700;color:#FFFFFF;border-radius:26px;">
+                          Confirm my account
+                        </a>
+                      </td>
+                    </tr>
+                  </table>
+                  <!--<![endif]-->
+                </td>
+              </tr>
+
+              <tr>
+                <td class="pad" style="padding:0 40px 12px;">
+                  <p class="muted-ink" style="margin:0 0 8px;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:13.5px;line-height:21px;color:#6B7A71;">
+                    The link works once and expires in an hour. If the button doesn&rsquo;t open,
+                    paste this into your browser:
+                  </p>
+                  <p style="margin:0;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:12.5px;line-height:20px;word-break:break-all;">
+                    <a href="{{ .ConfirmationURL }}" style="color:#157A3E;text-decoration:underline;">{{ .ConfirmationURL }}</a>
+                  </p>
+                </td>
+              </tr>
+
+              <tr>
+                <td class="pad" style="padding:26px 40px 0;">
+                  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                    <tr><td class="hair" style="border-top:1px solid #EDE9E1;font-size:0;line-height:0;">&nbsp;</td></tr>
+                  </table>
+                </td>
+              </tr>
+
+              <!-- The security line that matters: tell people what to do if this
+                   wasn't them, and give them a monitored human address. -->
+              <tr>
+                <td class="pad" style="padding:22px 40px 40px;">
+                  <p class="muted-ink" style="margin:0;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:13.5px;line-height:21px;color:#6B7A71;">
+                    Didn&rsquo;t sign up? Then someone typed this address by mistake &mdash; ignore this
+                    and no account is created. If you keep getting these, tell us at
+                    <a href="mailto:support@fruitly.fit" style="color:#157A3E;text-decoration:underline;">support@fruitly.fit</a>.
+                  </p>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+        <!-- footer -->
+        <tr>
+          <td class="pad" style="padding:26px 40px 0;">
+            <p class="muted-ink" style="margin:0 0 6px;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:12.5px;line-height:20px;color:#8A968D;">
+              Fruitly &middot; Fresh Fruit. Zero Hassle. &middot; Bengaluru
+            </p>
+            <p class="muted-ink" style="margin:0;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:12.5px;line-height:20px;color:#8A968D;">
+              Account help <a href="mailto:support@fruitly.fit" style="color:#8A968D;text-decoration:underline;">support@fruitly.fit</a>
+              &nbsp;&middot;&nbsp;
+              Deliveries <a href="mailto:order@fruitly.fit" style="color:#8A968D;text-decoration:underline;">order@fruitly.fit</a>
+            </p>
+          </td>
+        </tr>
+
+      </table>
+    </td>
+  </tr>
+</table>
+
+</body>
+</html>

@@ -424,6 +424,32 @@ button.day:active { transform: scale(0.94); }
 .footer__links { display: flex; gap: clamp(18px, 2.4vw, 32px); flex-wrap: wrap; }
 .footer__links a { font: 500 calc(14px * var(--ui))/1 var(--sans); color: rgba(255, 255, 255, 0.7); }
 .footer__links a:hover { color: var(--mango); }
+
+/* Contact row inside the footer band. Full-width child of the flex band so it
+   sits under the brand/links row with a hairline between, rather than becoming
+   a second stacked card. Purpose leads, address follows — people scan for the
+   job they need doing, not for an address. */
+.footer__contact {
+  flex: 1 0 100%;
+  margin-top: clamp(22px, 2.4vw, 30px);
+  padding-top: clamp(20px, 2.2vw, 26px);
+  border-top: 1px solid rgba(255, 255, 255, 0.14);
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: clamp(16px, 2vw, 28px);
+}
+.footer__contact div { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
+.footer__contact span {
+  font: 600 calc(11.5px * var(--ui))/1 var(--sans);
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.45);
+}
+.footer__contact a {
+  font: 500 calc(14px * var(--ui))/1.3 var(--sans);
+  color: rgba(255, 255, 255, 0.82);
+  word-break: break-word;
+}
+.footer__contact a:hover { color: var(--mango); }
 .footer__note { font-size: calc(13px * var(--ui)); color: rgba(255, 255, 255, 0.4); }
 
 /* ---------- hero ---------- */

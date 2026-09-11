@@ -16,6 +16,19 @@ document.addEventListener("DOMContentLoaded", function () {
     status.textContent = message;
     form.hidden = true;
     back.hidden = false;
+    if (!document.getElementById("reset-help")) {
+      var help = document.createElement("p");
+      help.id = "reset-help";
+      help.className = "small muted";
+      help.style.margin = "0";
+      help.appendChild(document.createTextNode("Locked out for good? Email "));
+      var a = document.createElement("a");
+      a.href = "mailto:support@fruitly.fit";
+      a.textContent = "support@fruitly.fit";
+      help.appendChild(a);
+      help.appendChild(document.createTextNode("."));
+      back.parentNode.insertBefore(help, back.nextSibling);
+    }
   }
 
   /* Supabase reports a dead link in the fragment rather than by throwing. */
