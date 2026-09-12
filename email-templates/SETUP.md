@@ -126,11 +126,19 @@ Add every selector the provider gives you.
 ### DMARC — what receivers should do when SPF/DKIM fail
 Start in report-only so nothing gets blocked while you verify:
 ```
-Type: TXT   Name: _dmarc   Value: v=DMARC1; p=none; rua=mailto:support@fruitly.fit; pct=100; adkim=s; aspf=s
+Type: TXT   Name: _dmarc   Value: v=DMARC1; p=none; rua=mailto:support@fruitly.fit; pct=100
 ```
 Once reports show only your real senders passing — usually a week or two —
 tighten to `p=quarantine`, then `p=reject`. **`p=none` protects nobody**; it only
 gathers evidence. Finishing the move to `p=reject` is the point.
+
+**Do not add `adkim=s; aspf=s`.** Those demand that the signing domain match
+`fruitly.fit` exactly. Transactional senders normally verify on a subdomain and
+sign as `send.fruitly.fit`, which satisfies DMARC's default *relaxed* alignment
+but fails strict — so with the strict flags set, every message you send fails
+DMARC. Harmless at `p=none`, but it means the reports look broken and can never
+be cleared, and at `p=reject` it silently destroys all of your own mail.
+Relaxed is the default; leaving both flags off is what you want.
 
 ### Verify
 ```bash
