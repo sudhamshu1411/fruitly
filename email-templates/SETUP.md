@@ -31,9 +31,9 @@ mail will not reach customers.
 ```
 Sender email:  support@fruitly.fit
 Sender name:   Fruitly
-Host:          <see "Which host?" below>
+Host:          smtp.resend.com (path A)  ·  smtp.gmail.com (path B)
 Port:          587        (STARTTLS — prefer this over 465/implicit TLS)
-Username:      <see below — not always the address>
+Username:      resend (path A)  ·  auth@fruitly.fit (path B)
 Password:      <an app password / API key, never the mailbox password>
 ```
 
@@ -67,11 +67,10 @@ Three traps:
   disabling basic-auth SMTP submission. If your MX is Outlook, don't plan on
   `smtp.office365.com` working here.
 
-### Better: don't use the mailbox at all
+### Pick one of two senders
 
-Point Supabase at a transactional sender authenticated on `fruitly.fit`, and
-keep the four mailboxes for humans. This is not tidiness — the mailbox route
-walks into three concrete failures:
+The mailbox's own SMTP is a third option and the one to avoid — the mailbox
+route walks into three concrete failures:
 
 1. **Quota.** Zoho free is ~200/day account-wide, Gmail ~500. Signups, resends
    and password resets share that with real correspondence. On a launch day the
@@ -83,20 +82,56 @@ walks into three concrete failures:
    identical templated messages build different sender reputations. Mixed, one
    bad run costs you the ability to answer customers.
 
+#### Path A — a transactional sender (no Workspace needed)
+
 | Service | Host | Username | Password | Free tier |
 |---|---|---|---|---|
 | **Resend** | `smtp.resend.com` | `resend` | API key | 3,000/mo, 100/day |
 | **Brevo** | `smtp-relay.brevo.com` | login shown under SMTP & API | SMTP key | 300/day |
 | **Amazon SES** (`ap-south-1`) | `email-smtp.ap-south-1.amazonaws.com` | IAM SMTP user | IAM SMTP password | cheapest at volume, starts sandboxed |
 
-Resend is the right pick for this stage: the DKIM records it issues are exactly
-what step 3 below is asking for.
+All on port 587. Resend is the right pick for this stage: the DKIM records it
+issues are exactly what step 3 below is asking for.
 
-**Mandatory either way:** verify the `fruitly.fit` domain inside the service
-*before* pointing Supabase at it. Until it is verified, `From:
-support@fruitly.fit` is rejected outright — no provider lets you send as a
-domain you haven't proven you own. Verification is also what generates the DKIM
-records, so it feeds step 3 directly.
+**Verify the `fruitly.fit` domain inside the service *before* pointing Supabase
+at it.** Until it is verified, `From: support@fruitly.fit` is rejected outright
+— no provider lets you send as a domain you haven't proven you own. Verification
+is also what generates the DKIM records, so it feeds step 3 directly.
+
+#### Path B — Google Workspace, if the mailboxes already live there
+
+Perfectly sound at this scale, and one fewer vendor. **Not** an option on a free
+`@gmail.com` account: SPF and DKIM would belong to `gmail.com` while the From
+header says `fruitly.fit`, so alignment fails and your own mail reads as
+spoofed.
+
+1. **Turn DKIM on. It is off by default** — the trap almost everyone hits.
+   Admin console → Apps → Google Workspace → Gmail → **Authenticate email**.
+   Generate a 2048-bit key, add the `google._domainkey` TXT record it gives you,
+   wait for it to resolve, then come back and click **Start authentication**.
+2. **Make a dedicated sending account.** Create `auth@fruitly.fit`, leave its
+   inbox empty, and in its Gmail settings add `support@fruitly.fit` under
+   **Send mail as** with *Treat as an alias* on. Verify it.
+
+   This matters twice over. A Google app password also grants IMAP, so whoever
+   holds it can **read** the mailbox you authenticate as — point it at an empty
+   one. And if the sender address is not a verified send-as on the
+   authenticating account, **Gmail silently rewrites the From**: customers get
+   mail from the wrong address, with no error anywhere.
+3. **App password.** Signed in as that account, turn on 2-Step Verification —
+   the option does not appear until you do — then generate one at
+   `myaccount.google.com/apppasswords`. Shown once.
+
+```
+Host:      smtp.gmail.com
+Port:      587
+Username:  auth@fruitly.fit          # what you authenticate as
+Password:  the 16-char app password, spaces removed
+```
+
+SPF include is `_spf.google.com`. The ceiling is ~2,000 messages/day (500 during
+a trial), and there are no per-message logs — when a customer says the mail never
+arrived, you have no way to check whether it left.
 
 ---
 
@@ -111,17 +146,21 @@ Add at your DNS host, on the `fruitly.fit` zone:
 
 ### SPF — who may send as you
 ```
-Type: TXT   Name: @   Value: v=spf1 include:<your-provider's-spf-domain> ~all
+Type: TXT   Name: @   Value: v=spf1 include:<your sender's spf domain> ~all
 ```
-One SPF record only. If one already exists, merge the `include:` into it — two
-SPF records is a hard fail.
+On path B the include is `_spf.google.com`; on path A the service prints it
+during domain verification. One SPF record only — if one already exists, merge
+the `include:` into it. Two SPF records is a hard fail.
 
 ### DKIM — cryptographic signature on each message
-Your mail provider generates this. Typically:
+The provider generates these; you never invent them. On path A they appear the
+moment the domain verifies. On path B **nothing is signed until you switch it
+on** — see step 1 of path B above.
 ```
-Type: CNAME   Name: <selector>._domainkey   Value: <provider-supplied>
+Type: TXT or CNAME   Name: <selector>._domainkey   Value: <provider-supplied>
 ```
-Add every selector the provider gives you.
+Google's selector is `google`, and its record is a TXT. Add every selector the
+provider gives you.
 
 ### DMARC — what receivers should do when SPF/DKIM fail
 Start in report-only so nothing gets blocked while you verify:
