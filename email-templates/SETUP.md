@@ -22,116 +22,65 @@ customer will reply to, so it must be a monitored inbox — not a no-reply.
 
 ---
 
-## 2. SMTP (Supabase → Project Settings → Authentication → SMTP Settings)
+## 2. Mail sending — the mailboxes are at GoDaddy, and GoDaddy can't do this
 
-Until this is set, Supabase uses a shared sender that is rate-limited to a
-handful of messages an hour and may only deliver to project members. Confirmation
-mail will not reach customers.
+GoDaddy sells two email products. Which one you have changes the reason, not the
+conclusion. Check under **GoDaddy account → Email & Office**, or:
+
+```bash
+dig MX fruitly.fit +short
+```
+
+| MX | Product | Why it can't send your auth mail |
+|---|---|---|
+| `…mail.protection.outlook.com` | Microsoft 365 from GoDaddy | Microsoft permanently disabled basic-auth SMTP submission in Exchange Online in Sept 2025 |
+| `smtp.secureserver.net` | Workspace Email (legacy) | works, but the credential *is* the mailbox password, the cap is ~250/day, and the product is being retired |
+
+On Microsoft 365 the only supported route is SMTP AUTH with OAuth 2.0. Supabase's
+SMTP form takes a username and a password and nothing else — there is no field
+for a token, so there is nothing to configure. This is not a setting to hunt for.
+
+Keep the GoDaddy mailboxes for reading and replying to people. Auth mail goes
+through a sender built for it. **Nothing below changes where
+`support@fruitly.fit` receives mail.**
+
+### Set up Resend
+
+1. Sign up at `resend.com` — free, no card. **Domains → Add Domain** →
+   `fruitly.fit` → pick the region nearest Bengaluru.
+2. Resend prints three or four DNS records. Add them at
+   **GoDaddy → My Products → Domains → fruitly.fit → DNS → Records**, exactly as
+   printed.
+3. **API Keys → Create API Key**, name it `fruitly-supabase-auth`, permission
+   **Sending access** — not Full access. Shown once.
+
+Then in Supabase, **Project Settings → Authentication → SMTP Settings**, enable
+custom SMTP:
 
 ```
 Sender email:  support@fruitly.fit
 Sender name:   Fruitly
-Host:          smtp.resend.com (path A)  ·  smtp.gmail.com (path B)
-Port:          587        (STARTTLS — prefer this over 465/implicit TLS)
-Username:      resend (path A)  ·  auth@fruitly.fit (path B)
-Password:      <an app password / API key, never the mailbox password>
+Host:          smtp.resend.com
+Port:          587
+Username:      resend          # the literal word, not an address
+Password:      your re_… key
 ```
 
-### Which host?
+### Three things that go wrong at GoDaddy specifically
 
-The host is issued by **whoever runs the `fruitly.fit` mailboxes** — not by the
-domain, and not by Supabase. One command names them:
+**The Name field is relative.** Resend displays a full name like
+`send.fruitly.fit`; GoDaddy appends the domain itself, so you type only `send`.
+Entering the whole thing creates `send.fruitly.fit.fruitly.fit`, which resolves
+to nothing and leaves verification failing with no explanation. The apex is `@`.
 
-```bash
-dig MX fruitly.fit +short          # macOS / Linux
-nslookup -type=mx fruitly.fit      # Windows
-```
+**Don't touch the existing MX rows.** Those are your mailboxes. Resend's MX sits
+on the `send` name — a different host — so the two coexist and mail keeps
+arriving.
 
-| MX looks like | Provider | SMTP host | Username |
-|---|---|---|---|
-| `mx.zoho.in` / `mx.zoho.com` | Zoho Mail | `smtp.zoho.in` **or** `smtp.zoho.com` | full address |
-| `aspmx.l.google.com` | Google Workspace | `smtp.gmail.com` | full address |
-| `*.mail.protection.outlook.com` | Microsoft 365 | `smtp.office365.com` | full address |
-| `mx1.hostinger.com` | Hostinger | `smtp.hostinger.com` | full address |
-| `mx1.privateemail.com` | Namecheap | `mail.privateemail.com` | full address |
-| `*.secureserver.net` | GoDaddy | `smtpout.secureserver.net` | full address |
-
-Three traps:
-
-- **Zoho's data centre matters.** `smtp.zoho.in` and `smtp.zoho.com` are
-  different servers; the wrong one fails auth with an unhelpful error. If your
-  webmail URL is `mail.zoho.in`, use `.in`.
-- **Google and Zoho need an app password**, not the mailbox password, and the
-  option only appears once 2FA is on.
-- **Microsoft 365 is the one to avoid.** Microsoft has been permanently
-  disabling basic-auth SMTP submission. If your MX is Outlook, don't plan on
-  `smtp.office365.com` working here.
-
-### Pick one of two senders
-
-The mailbox's own SMTP is a third option and the one to avoid — the mailbox
-route walks into three concrete failures:
-
-1. **Quota.** Zoho free is ~200/day account-wide, Gmail ~500. Signups, resends
-   and password resets share that with real correspondence. On a launch day the
-   ceiling is reached and confirmation mail stops — silently, for customers.
-2. **Blast radius.** The SMTP password *is* the mailbox credential. Supabase
-   stores it; if it leaks, someone can read and send as `support@`. An API key
-   does one thing and revokes in a click.
-3. **Reputation.** A human support inbox and a robot sending hundreds of
-   identical templated messages build different sender reputations. Mixed, one
-   bad run costs you the ability to answer customers.
-
-#### Path A — a transactional sender (no Workspace needed)
-
-| Service | Host | Username | Password | Free tier |
-|---|---|---|---|---|
-| **Resend** | `smtp.resend.com` | `resend` | API key | 3,000/mo, 100/day |
-| **Brevo** | `smtp-relay.brevo.com` | login shown under SMTP & API | SMTP key | 300/day |
-| **Amazon SES** (`ap-south-1`) | `email-smtp.ap-south-1.amazonaws.com` | IAM SMTP user | IAM SMTP password | cheapest at volume, starts sandboxed |
-
-All on port 587. Resend is the right pick for this stage: the DKIM records it
-issues are exactly what step 3 below is asking for.
-
-**Verify the `fruitly.fit` domain inside the service *before* pointing Supabase
-at it.** Until it is verified, `From: support@fruitly.fit` is rejected outright
-— no provider lets you send as a domain you haven't proven you own. Verification
-is also what generates the DKIM records, so it feeds step 3 directly.
-
-#### Path B — Google Workspace, if the mailboxes already live there
-
-Perfectly sound at this scale, and one fewer vendor. **Not** an option on a free
-`@gmail.com` account: SPF and DKIM would belong to `gmail.com` while the From
-header says `fruitly.fit`, so alignment fails and your own mail reads as
-spoofed.
-
-1. **Turn DKIM on. It is off by default** — the trap almost everyone hits.
-   Admin console → Apps → Google Workspace → Gmail → **Authenticate email**.
-   Generate a 2048-bit key, add the `google._domainkey` TXT record it gives you,
-   wait for it to resolve, then come back and click **Start authentication**.
-2. **Make a dedicated sending account.** Create `auth@fruitly.fit`, leave its
-   inbox empty, and in its Gmail settings add `support@fruitly.fit` under
-   **Send mail as** with *Treat as an alias* on. Verify it.
-
-   This matters twice over. A Google app password also grants IMAP, so whoever
-   holds it can **read** the mailbox you authenticate as — point it at an empty
-   one. And if the sender address is not a verified send-as on the
-   authenticating account, **Gmail silently rewrites the From**: customers get
-   mail from the wrong address, with no error anywhere.
-3. **App password.** Signed in as that account, turn on 2-Step Verification —
-   the option does not appear until you do — then generate one at
-   `myaccount.google.com/apppasswords`. Shown once.
-
-```
-Host:      smtp.gmail.com
-Port:      587
-Username:  auth@fruitly.fit          # what you authenticate as
-Password:  the 16-char app password, spaces removed
-```
-
-SPF include is `_spf.google.com`. The ceiling is ~2,000 messages/day (500 during
-a trial), and there are no per-message logs — when a customer says the mail never
-arrived, you have no way to check whether it left.
+**Don't add a second SPF record at the apex.** Your apex already has a GoDaddy
+SPF row, and two SPF records at one name is a hard fail. Resend's SPF goes on
+`send`. If anything ever asks for an apex SPF, merge the `include:` into the
+existing row rather than adding another.
 
 ---
 
@@ -144,23 +93,16 @@ at your own customers, not a deliverability nicety.
 
 Add at your DNS host, on the `fruitly.fit` zone:
 
-### SPF — who may send as you
+### SPF and DKIM — both come from Resend
+Resend prints these when the domain verifies; you never invent them. Typically:
 ```
-Type: TXT   Name: @   Value: v=spf1 include:<your sender's spf domain> ~all
+Type: TXT   Name: send                Value: v=spf1 include:amazonses.com ~all
+Type: MX    Name: send                Value: <provider-supplied>   Priority: 10
+Type: TXT   Name: resend._domainkey   Value: p=<long public key>
 ```
-On path B the include is `_spf.google.com`; on path A the service prints it
-during domain verification. One SPF record only — if one already exists, merge
-the `include:` into it. Two SPF records is a hard fail.
-
-### DKIM — cryptographic signature on each message
-The provider generates these; you never invent them. On path A they appear the
-moment the domain verifies. On path B **nothing is signed until you switch it
-on** — see step 1 of path B above.
-```
-Type: TXT or CNAME   Name: <selector>._domainkey   Value: <provider-supplied>
-```
-Google's selector is `google`, and its record is a TXT. Add every selector the
-provider gives you.
+They all sit on the `send` name, not the apex — which is exactly why they don't
+collide with the GoDaddy SPF and MX rows already there. Paste the DKIM value
+whole, no line breaks. Add every selector Resend gives you.
 
 ### DMARC — what receivers should do when SPF/DKIM fail
 Start in report-only so nothing gets blocked while you verify:
@@ -172,19 +114,20 @@ tighten to `p=quarantine`, then `p=reject`. **`p=none` protects nobody**; it onl
 gathers evidence. Finishing the move to `p=reject` is the point.
 
 **Do not add `adkim=s; aspf=s`.** Those demand that the signing domain match
-`fruitly.fit` exactly. Transactional senders normally verify on a subdomain and
-sign as `send.fruitly.fit`, which satisfies DMARC's default *relaxed* alignment
-but fails strict — so with the strict flags set, every message you send fails
+`fruitly.fit` exactly. Resend signs as `send.fruitly.fit`, which satisfies
+DMARC's default *relaxed* alignment but fails strict — so with the strict flags set, every message you send fails
 DMARC. Harmless at `p=none`, but it means the reports look broken and can never
 be cleared, and at `p=reject` it silently destroys all of your own mail.
 Relaxed is the default; leaving both flags off is what you want.
 
 ### Verify
 ```bash
-dig +short TXT fruitly.fit | grep spf1
+dig +short MX fruitly.fit                          # must still be GoDaddy/Outlook
 dig +short TXT _dmarc.fruitly.fit
-dig +short CNAME <selector>._domainkey.fruitly.fit
+dig +short TXT resend._domainkey.fruitly.fit
 ```
+If the first one no longer shows your mail servers, you edited the wrong row.
+Put it back before anything else — that is your inbound mail.
 Then send yourself a confirmation and check the headers show
 `spf=pass`, `dkim=pass`, `dmarc=pass`.
 
