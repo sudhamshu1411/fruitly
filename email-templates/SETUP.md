@@ -215,6 +215,29 @@ everywhere below.
 
 ## 7. Verify it actually works
 
+### Start here: `/auth-check.html`
+
+Open **https://fruitly.fit/auth-check.html** in a private window. It reads the
+live settings straight from the Supabase project and tells you what is still
+wrong, with the exact screen to fix each one.
+
+It checks the half of this setup that lives in a dashboard rather than in the
+repo — and is therefore the half that drifts without anyone noticing:
+
+- whether email confirmation is actually on
+- whether signups are actually allowed
+- whether the Google provider is actually enabled
+- which origin you are on, and the exact URLs Supabase must be told to accept
+- a real test signup, which is the only way to prove SMTP works end to end
+
+It reads configuration and never writes any. The page is `noindex` and
+disallowed in `robots.txt`.
+
+Come back to it after every change in sections 4–6 rather than guessing.
+
+### Then walk the flows by hand
+
+
 Once 1–6 are done, walk these in a private window:
 
 | Check | Expect |

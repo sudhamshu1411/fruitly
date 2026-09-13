@@ -51,15 +51,33 @@ document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("f-new").focus();
   }
 
-  /* Either the session is already restored, or it lands moments later when
-     supabase-js finishes exchanging the token. Listen and poll: whichever
-     happens first wins, and if neither does the link was no good. */
-  API.onAuthEvent(function (_event, session) { if (session) ready(); });
+  /* Does this load carry a recovery token? PKCE puts a one-time code in the
+     query string; the older implicit flow puts tokens in the fragment. */
+  var hasToken = new URLSearchParams(location.search).has("code") ||
+                 hash.has("access_token") || hash.get("type") === "recovery";
+
+  /* When a token is present the page must wait for supabase-js to exchange it,
+     and must NOT accept whatever session is already in localStorage.
+
+     Otherwise someone already signed in as one person, opening a reset link
+     belonging to another (a shared laptop, a forwarded email), gets the form
+     immediately against the *cached* session — and updateUser() then changes
+     the wrong account's password. So with a token we only settle on an auth
+     event fired after this point, never on the session we started with. */
+  API.onAuthEvent(function (event, session) {
+    if (!session) return;
+    if (hasToken && event !== "PASSWORD_RECOVERY" && event !== "SIGNED_IN") return;
+    ready();
+  });
 
   (async function () {
+    /* No token means an ordinary signed-in visit to change a password, which
+       the existing session is exactly the right thing to use. */
+    if (!hasToken) {
+      if (await API.session()) return ready();
+    }
     for (var i = 0; i < 20; i++) {
       if (settled) return;
-      if (await API.session()) return ready();
       await new Promise(function (r) { setTimeout(r, 150); });
     }
     if (settled) return;

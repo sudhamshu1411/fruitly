@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Auth check — Fruitly</title>
+<meta name="description" content="Live check of the Fruitly authentication configuration.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#FBF8F3">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=Instrument+Sans:ital,wght@0,400;0,500;0,600&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/fruitly.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js" defer></script>
+<script src="js/config.js" defer></script>
+<script src="js/api.js" defer></script>
+<script src="js/auth-check.js" defer></script>
+<style>
+  .checks { display: flex; flex-direction: column; gap: 0; }
+  .chk {
+    display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: 14px;
+    padding: 18px 0; border-bottom: 1px solid var(--hairline);
+  }
+  .chk:last-child { border-bottom: 0; }
+  .chk__dot {
+    width: 18px; height: 18px; border-radius: 999px; margin-top: 3px;
+    background: rgba(19, 42, 29, 0.12);
+  }
+  .chk[data-state="pass"] .chk__dot { background: var(--green); }
+  .chk[data-state="fail"] .chk__dot { background: #B3330E; }
+  .chk[data-state="warn"] .chk__dot { background: #C2731A; }
+  .chk__body { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+  .chk__name { font: 600 16px/1.35 var(--sans); margin: 0; }
+  .chk__note { font: 400 14.5px/1.55 var(--sans); color: var(--ink-60); margin: 0; }
+  .chk__fix {
+    font: 400 14px/1.55 var(--sans); margin: 4px 0 0;
+    padding: 12px 14px; border-radius: 12px; background: rgba(179, 51, 14, 0.07);
+  }
+  .chk[data-state="warn"] .chk__fix { background: rgba(194, 115, 26, 0.09); }
+  .chk code {
+    font: 400 13px/1.5 ui-monospace, "SF Mono", Menlo, monospace;
+    background: rgba(19, 42, 29, 0.06); padding: 1px 6px; border-radius: 5px;
+    overflow-wrap: anywhere;
+  }
+  .copyrow {
+    display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px; align-items: center;
+    background: rgba(19, 42, 29, 0.05); border-radius: 10px; padding: 9px 10px 9px 13px; margin-top: 6px;
+  }
+  .copyrow code { background: none; padding: 0; display: block; overflow-x: auto; white-space: pre; }
+  .copyrow button {
+    font: 500 12.5px/1 var(--sans); border: 1px solid rgba(19, 42, 29, 0.16);
+    background: #fff; border-radius: 8px; padding: 8px 12px; cursor: pointer;
+  }
+  .tally { font: 500 14.5px/1.5 var(--sans); margin: 0; }
+  .field { display: flex; flex-direction: column; gap: 8px; }
+  .field input {
+    height: 52px; padding: 0 20px;
+    border-radius: var(--r-input); border: 1px solid rgba(19, 42, 29, 0.14);
+    background: #fff; font: 400 16px/1 var(--sans);
+  }
+  .field input:focus { outline: 2px solid var(--green); outline-offset: 1px; }
+</style>
+</head>
+<body>
+
+<main style="min-height:100vh;display:flex;align-items:flex-start;justify-content:center;padding:40px 20px">
+  <div style="width:100%;max-width:680px;display:flex;flex-direction:column;gap:20px">
+
+    <header style="display:flex;flex-direction:column;gap:8px">
+      <h1 class="h3" style="margin:0">Authentication check</h1>
+      <p class="small muted" style="margin:0">
+        Reads the live settings from your Supabase project and tells you what is
+        still wrong. Nothing here changes any configuration.
+      </p>
+    </header>
+
+    <div class="card" style="padding:var(--card-pad);display:flex;flex-direction:column;gap:8px">
+      <p class="tally" id="tally">Checking…</p>
+      <div class="checks" id="checks"></div>
+    </div>
+
+    <div class="card" style="padding:var(--card-pad);display:flex;flex-direction:column;gap:16px">
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <h2 class="h5" style="margin:0">Send a real test signup</h2>
+        <p class="small muted" style="margin:0">
+          Creates an account and asks Supabase to email it. This is the only way
+          to prove SMTP works end to end. Use an address you can open.
+        </p>
+      </div>
+      <form id="test-form" style="display:flex;flex-direction:column;gap:12px" novalidate>
+        <label class="field">
+          <span class="small muted">Email</span>
+          <input type="email" id="test-email" autocomplete="email" required placeholder="you@example.com">
+        </label>
+        <p class="autherr" id="test-error" role="alert" style="color:#B3330E;font:500 14px/1.4 var(--sans);min-height:20px;margin:0"></p>
+        <button class="btn btn--green btn--block" type="submit" id="test-submit">Send test email</button>
+      </form>
+    </div>
+
+    <a class="btn btn--outline btn--block" href="index.html">Back to the site</a>
+  </div>
+</main>
+
+</body>
+</html>

@@ -3,6 +3,7 @@ Allow: /
 Disallow: /admin.html
 Disallow: /auth.html
 Disallow: /auth-callback.html
+Disallow: /auth-check.html
 Disallow: /reset.html
 Disallow: /account.html
 Disallow: /orders.html
