@@ -291,3 +291,19 @@ on delivery) but no gateway is wired — add a UPI-mandate/Razorpay webhook that
 updates `orders.payment_status`. Live rider GPS, push notifications and
 procurement/inventory tables are the next backend slices; the ops dashboard
 already has the shape for them.
+
+---
+
+## Tests
+
+```bash
+node tests/reset-guard.mjs
+```
+
+Guards one specific hole in the password-reset flow: a browser already signed
+in, opening a recovery link whose token does not resolve, must **not** fall
+through to the cached session — otherwise `updateUser()` rewrites the wrong
+account's password. The test fails 3/5 against the code that had that bug.
+
+Live configuration is checked from the browser instead, at
+`/auth-check.html` — see `email-templates/SETUP.md` section 7.
